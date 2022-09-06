@@ -1,12 +1,17 @@
 package com.kAIS.KAIMyEntity.renderer;
 
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class MMDModelManager {
     static Map<String, Model> models;
@@ -120,6 +125,21 @@ public class MMDModelManager {
         public IMMDModel model;
         String entityName;
         String modelName;
+        public Properties properties = new Properties();
+        boolean loadedProperties = false;
+
+        public void loadModelProperties(boolean forceReload){
+            if (loadedProperties && !forceReload)
+                return;
+            String path2Properties = MinecraftClient.getInstance().runDirectory.toString() + "/KAIMyEntity/" + modelName + "/model.properties";
+            try {
+                InputStream istream = new FileInputStream(path2Properties);
+                properties.load(istream);
+            } catch (IOException e) {
+                KAIMyEntityClient.logger.warn( "KAIMyEntity/" + modelName + "/model.properties not found" );
+            }
+            loadedProperties = true;
+        } 
     }
 
     public static class ModelWithPlayerData extends Model {
@@ -141,12 +161,13 @@ public class MMDModelManager {
             put(EntityState.SwingRight, "swingRight");
             put(EntityState.SwingLeft, "swingLeft");
             put(EntityState.Sneak, "sneak");
+            put(EntityState.OnHorse, "onHorse");
         }};
         public boolean playCustomAnim; //Custom animation played in layer 0.
         public long rightHandMat, leftHandMat;
         public EntityState[] stateLayers;
         ByteBuffer matBuffer;
 
-        public enum EntityState {Idle, Walk, Sprint, Air, OnLadder, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak}
+        public enum EntityState {Idle, Walk, Sprint, Air, OnLadder, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse}
     }
 }

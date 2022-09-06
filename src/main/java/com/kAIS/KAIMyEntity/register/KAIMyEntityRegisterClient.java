@@ -1,5 +1,6 @@
 package com.kAIS.KAIMyEntity.register;
 
+import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
@@ -13,6 +14,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.EntityType;
+import net.minecraft.text.Text;
+
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -21,11 +24,13 @@ import java.io.File;
 public class KAIMyEntityRegisterClient {
     static KeyBinding keyResetPhysics = new KeyBinding("key.resetPhysics", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "key.title");
     static KeyBinding keyReloadModels = new KeyBinding("key.reloadModels", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, "key.title");
+    static KeyBinding keyReloadProperties = new KeyBinding("key.reloadProperties", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_2, "key.title");
+    static KeyBinding keyChangeProgram = new KeyBinding("key.changeProgram", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_3, "key.title");
     static KeyBinding keyCustomAnim1 = new KeyBinding("key.customAnim1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.title");
     static KeyBinding keyCustomAnim2 = new KeyBinding("key.customAnim2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
     static KeyBinding keyCustomAnim3 = new KeyBinding("key.customAnim3", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
     static KeyBinding keyCustomAnim4 = new KeyBinding("key.customAnim4", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.title");
-    static KeyBinding[] keyBindings = new KeyBinding[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics};
+    static KeyBinding[] keyBindings = new KeyBinding[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties, keyChangeProgram};
     static KeyBinding[] customKeyBindings = new KeyBinding[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4};
 
     public static void Register() {
@@ -50,6 +55,20 @@ public class KAIMyEntityRegisterClient {
                 onKeyResetPhysicsDown();
             }
         });
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (keyReloadProperties.wasPressed()) {
+                KAIMyEntity.reloadProperties = true;
+            }
+        });
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (keyChangeProgram.wasPressed()) {
+                KAIMyEntity.usingMMDShader = 1 - KAIMyEntity.usingMMDShader;
+                if(KAIMyEntity.usingMMDShader == 0)
+                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("Default shader"));
+                if(KAIMyEntity.usingMMDShader == 1)
+                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("MMDShader"));
+            }
+        });
 
         File[] modelDirs = new File(MinecraftClient.getInstance().runDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
@@ -59,7 +78,7 @@ public class KAIMyEntityRegisterClient {
                     if (EntityType.get(mcEntityName).isPresent())
                         EntityRendererRegistry.register(EntityType.get(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
                     else
-                        KAIMyEntityClient.logger.warn(mcEntityName + "not present,ignore rendering it!");
+                        KAIMyEntityClient.logger.warn(mcEntityName + " not present,ignore rendering it!");
                 }
             }
         }
