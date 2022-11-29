@@ -9,6 +9,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
 public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
@@ -44,6 +45,9 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         MMDModelManager.Model model = MMDModelManager.GetNotPlayerModel(modelName, animName);
         if (model != null) {
             matrixStackIn.push();
+            if(entityIn instanceof LivingEntity)
+                if(((LivingEntity) entityIn).isBaby())
+                    matrixStackIn.scale(0.5f, 0.5f, 0.5f);
             RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullShader);
             model.model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
             matrixStackIn.pop();
