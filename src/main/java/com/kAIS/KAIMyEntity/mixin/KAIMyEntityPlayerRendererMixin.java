@@ -19,6 +19,7 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
@@ -58,7 +59,11 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 } else if (entityIn.isSleeping()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
                 } else if (entityIn.hasVehicle()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
+                    if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f)){
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnHorse, 0);
+                    }else{
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
+                    }
                 } else if (entityIn.isSwimming()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
                 } else if (entityIn.isClimbing()) {
