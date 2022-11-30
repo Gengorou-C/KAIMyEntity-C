@@ -77,7 +77,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
 
                 //Layer 1
-                if ( ((entityIn.getActiveHand() == Hand.MAIN_HAND) && (entityIn.isUsingItem())) || ((entityIn.preferredHand == Hand.MAIN_HAND) && entityIn.handSwinging) ){
+                if ( ((entityIn.getActiveHand() == Hand.MAIN_HAND) && (entityIn.isUsingItem())) || ((entityIn.preferredHand == Hand.MAIN_HAND) && entityIn.handSwinging) && !entityIn.isSleeping()){
                     String itemId = getItemId_in_ActiveHand(entityIn, Hand.MAIN_HAND);
                     CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemRight, itemId, false, 1);
                 } else if (((entityIn.getActiveHand() == Hand.OFF_HAND) && (entityIn.isUsingItem())) || ((entityIn.preferredHand == Hand.OFF_HAND) && entityIn.handSwinging)) {
