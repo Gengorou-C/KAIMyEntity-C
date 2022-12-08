@@ -15,9 +15,13 @@ public class KAIMyEntityClient implements ClientModInitializer {
     public void onInitializeClient() {
         logger.info("KAIMyEntity Init begin...");
         MMDModelManager.Init();
+        logger.info("MMDModelManager.Init() finished");
         MMDTextureManager.Init();
+        logger.info("MMDTextureManager.Init() finished");
         MMDAnimManager.Init();
+        logger.info("MMDAnimManager.Init() finished");
         KAIMyEntityRegisterClient.Register();
+        logger.info("KAIMyEntityRegisterClient.Register() finished");
         logger.info("KAIMyEntity preInit successful.");
     }
 }

@@ -48,7 +48,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(entityIn instanceof LivingEntity)
                 if(((LivingEntity) entityIn).isBaby())
                     matrixStackIn.scale(0.5f, 0.5f, 0.5f);
-            RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullShader);
+            RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullProgram);
             model.model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
             matrixStackIn.pop();
         }

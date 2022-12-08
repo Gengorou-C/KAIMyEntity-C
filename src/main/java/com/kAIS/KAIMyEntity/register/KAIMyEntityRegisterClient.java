@@ -22,10 +22,10 @@ import java.io.File;
 
 @Environment(EnvType.CLIENT)
 public class KAIMyEntityRegisterClient {
-    static KeyBinding keyResetPhysics = new KeyBinding("key.resetPhysics", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "key.title");
-    static KeyBinding keyReloadModels = new KeyBinding("key.reloadModels", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, "key.title");
-    static KeyBinding keyReloadProperties = new KeyBinding("key.reloadProperties", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_2, "key.title");
-    static KeyBinding keyChangeProgram = new KeyBinding("key.changeProgram", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_3, "key.title");
+    static KeyBinding keyResetPhysics = new KeyBinding("key.resetPhysics", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, "key.title");
+    static KeyBinding keyReloadModels = new KeyBinding("key.reloadModels", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.title");
+    static KeyBinding keyReloadProperties = new KeyBinding("key.reloadProperties", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, "key.title");
+    static KeyBinding keyChangeProgram = new KeyBinding("key.changeProgram", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_0, "key.title");
     static KeyBinding keyCustomAnim1 = new KeyBinding("key.customAnim1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.title");
     static KeyBinding keyCustomAnim2 = new KeyBinding("key.customAnim2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
     static KeyBinding keyCustomAnim3 = new KeyBinding("key.customAnim3", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
