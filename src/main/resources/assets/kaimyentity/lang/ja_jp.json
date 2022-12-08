@@ -1,0 +1,11 @@
+{
+  "key.title": "KAIMyEntity",
+  "key.resetPhysics": "物理演算をリセット",
+  "key.reloadModels": "モデル再読み込み",
+  "key.reloadProperties": "プロパティ再読み込み",
+  "key.changeProgram":"プログラム切り替え",
+  "key.customAnim1": "カスタムアニメーション No.1",
+  "key.customAnim2": "カスタムアニメーション No.2",
+  "key.customAnim3": "カスタムアニメーション No.3",
+  "key.customAnim4": "カスタムアニメーション No.4"
+}

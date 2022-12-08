@@ -5,16 +5,17 @@ import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.Shader;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.LightType;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46C;
 import org.lwjgl.system.MemoryUtil;
 
@@ -66,7 +67,7 @@ public class MMDModelOpenGL implements IMMDModel {
     int indexType;
     Material[] mats;
     Material lightMapMaterial;
-    Vec3f light0Direction, light1Direction;
+    Vector3f light0Direction, light1Direction;
 
     MMDModelOpenGL() {
 
@@ -96,7 +97,7 @@ public class MMDModelOpenGL implements IMMDModel {
             KAIMyEntityClient.logger.info(String.format("Cannot open model: '%s'.", modelFilename));
             return null;
         }
-        BufferRenderer.unbindAll();
+        BufferRenderer.reset();
         //Model exists,now we prepare data for OpenGL
         int vertexArrayObject = GL46C.glGenVertexArrays();
         int indexBufferObject = GL46C.glGenBuffers();
@@ -249,18 +250,18 @@ public class MMDModelOpenGL implements IMMDModel {
 
     void RenderModel(Entity entityIn, float entityYaw, MatrixStack deliverStack) {
         MinecraftClient minecraft = MinecraftClient.getInstance();
-        light0Direction = new Vec3f(1.0f, 0.75f, 0.0f);
-        light1Direction = new Vec3f(-1.0f, 0.75f, 0.0f);
+        light0Direction = new Vector3f(1.0f, 0.75f, 0.0f);
+        light1Direction = new Vector3f(-1.0f, 0.75f, 0.0f);
         light0Direction.normalize();
         light1Direction.normalize();
-        light0Direction.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion(entityYaw));
-        light1Direction.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion(entityYaw));
+        light0Direction.rotate(new Quaternionf().rotateY(entityYaw*((float)Math.PI / 180F)));
+        light1Direction.rotate(new Quaternionf().rotateY(entityYaw*((float)Math.PI / 180F)));
 
-        deliverStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-entityYaw));
+        deliverStack.multiply(new Quaternionf().rotateY(-entityYaw*((float)Math.PI / 180F)));
         deliverStack.scale(0.09f, 0.09f, 0.09f);
         
         if(KAIMyEntity.usingMMDShader == 0){
-            shaderProgram = RenderSystem.getShader().getProgramRef();
+            shaderProgram = RenderSystem.getShader().getGlRef();
             setUniforms(RenderSystem.getShader(), deliverStack);
             RenderSystem.getShader().bind();
         }
@@ -271,7 +272,7 @@ public class MMDModelOpenGL implements IMMDModel {
         
         updateLocation(shaderProgram);
 
-        BufferRenderer.unbindAll();
+        BufferRenderer.reset();
         GL46C.glBindVertexArray(vertexArrayObject);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
@@ -348,8 +349,8 @@ public class MMDModelOpenGL implements IMMDModel {
 
         FloatBuffer modelViewMatBuff = MemoryUtil.memAllocFloat(16);
         FloatBuffer projMatBuff = MemoryUtil.memAllocFloat(16);
-        deliverStack.peek().getPositionMatrix().writeColumnMajor(modelViewMatBuff);
-        RenderSystem.getProjectionMatrix().writeColumnMajor(projMatBuff);
+        deliverStack.peek().getPositionMatrix().get(modelViewMatBuff);
+        RenderSystem.getProjectionMatrix().get(projMatBuff);
 
         //upload Uniforms(MMDShader)
         if(KAIMyEntity.usingMMDShader == 1){
@@ -358,17 +359,17 @@ public class MMDModelOpenGL implements IMMDModel {
 
             if(light0Location != -1){
                 FloatBuffer light0Buff = MemoryUtil.memAllocFloat(3);
-                light0Buff.put(light0Direction.getX());
-                light0Buff.put(light0Direction.getY());
-                light0Buff.put(light0Direction.getZ());
+                light0Buff.put(light0Direction.x);
+                light0Buff.put(light0Direction.y);
+                light0Buff.put(light0Direction.z);
                 light0Buff.position(0);
                 RenderSystem.glUniform3(light0Location, light0Buff);
             }
             if(light1Location != -1){
                 FloatBuffer light1Buff = MemoryUtil.memAllocFloat(3);
-                light1Buff.put(light1Direction.getX());
-                light1Buff.put(light1Direction.getY());
-                light1Buff.put(light1Direction.getZ());
+                light1Buff.put(light1Direction.x);
+                light1Buff.put(light1Direction.y);
+                light1Buff.put(light1Direction.z);
                 light1Buff.position(0);
                 RenderSystem.glUniform3(light1Location, light1Buff);
             }
@@ -468,7 +469,7 @@ public class MMDModelOpenGL implements IMMDModel {
             GL46C.glUniform1i(KAIMyLocationF, 0);
 
         RenderSystem.getShader().unbind();
-        BufferRenderer.unbindAll();
+        BufferRenderer.reset();
     }
 
     static class Material {
@@ -508,7 +509,7 @@ public class MMDModelOpenGL implements IMMDModel {
         KAIMyLocationF = GlStateManager._glGetUniformLocation(shaderProgram, "KAIMyEntityF");
     }
 
-    public void setUniforms(Shader shader, MatrixStack deliverStack){
+    public void setUniforms(ShaderProgram shader, MatrixStack deliverStack){
         if(shader.modelViewMat != null)
             shader.modelViewMat.set(deliverStack.peek().getPositionMatrix());
 

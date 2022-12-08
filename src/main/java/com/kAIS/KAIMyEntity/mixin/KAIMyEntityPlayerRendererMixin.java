@@ -21,15 +21,14 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
+
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.nio.FloatBuffer;
 
 @Mixin(PlayerEntityRenderer.class)
 public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
@@ -110,29 +109,29 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             if(KAIMyEntity.reloadProperties)
                 KAIMyEntity.reloadProperties = false;
             matrixStackIn.scale(size, size, size);
-            RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentShader);
+            RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentProgram);
             model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
 
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;
             nf.GetRightHandMat(model.GetModelLong(), mwpd.playerData.rightHandMat);
             matrixStackIn.push();
-            matrixStackIn.peek().getPositionMatrix().multiply(DataToMat(nf, mwpd.playerData.rightHandMat));
+            matrixStackIn.peek().getPositionMatrix().mul(DataToMat(nf, mwpd.playerData.rightHandMat));
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.MAIN_HAND, "z");
-            matrixStackIn.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(rotationDegree));
+            matrixStackIn.multiply(new Quaternionf().rotateZ(rotationDegree*((float)Math.PI / 180F)));
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.MAIN_HAND, "x");
-            matrixStackIn.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(rotationDegree));
-            matrixStackIn.scale(10.0f, 10.0f, 10.0f); 
+            matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
+            matrixStackIn.scale(10.0f, 10.0f, 10.0f);
             MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getMainHandStack(), ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
 
             nf.GetLeftHandMat(model.GetModelLong(), mwpd.playerData.leftHandMat);
             matrixStackIn.push();
-            matrixStackIn.peek().getPositionMatrix().multiply(DataToMat(nf, mwpd.playerData.leftHandMat));
+            matrixStackIn.peek().getPositionMatrix().mul(DataToMat(nf, mwpd.playerData.leftHandMat));
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.OFF_HAND, "z");
-            matrixStackIn.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(rotationDegree));
+            matrixStackIn.multiply(new Quaternionf().rotateZ(rotationDegree*((float)Math.PI / 180F)));
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.OFF_HAND, "x");
-            matrixStackIn.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(rotationDegree));
+            matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             matrixStackIn.scale(10.0f, 10.0f, 10.0f);
             MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
@@ -175,26 +174,12 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
     }
     Matrix4f DataToMat(NativeFunc nf, long data)
     {
-        Matrix4f result = new Matrix4f();
-        result.readRowMajor(FloatBuffer.wrap(new float[]
-        {
-            DataToFloat(nf, data, 0),
-            DataToFloat(nf, data, 4),
-            DataToFloat(nf, data, 8),
-            DataToFloat(nf, data, 12),
-            DataToFloat(nf, data, 16),
-            DataToFloat(nf, data, 20),
-            DataToFloat(nf, data, 24),
-            DataToFloat(nf, data, 28),
-            DataToFloat(nf, data, 32),
-            DataToFloat(nf, data, 36),
-            DataToFloat(nf, data, 40),
-            DataToFloat(nf, data, 44),
-            DataToFloat(nf, data, 48),
-            DataToFloat(nf, data, 52),
-            DataToFloat(nf, data, 56),
-            DataToFloat(nf, data, 60),
-        }));
+        Matrix4f result = new Matrix4f(
+            DataToFloat(nf, data, 0),DataToFloat(nf, data, 16),DataToFloat(nf, data, 32),DataToFloat(nf, data, 48),
+            DataToFloat(nf, data, 4),DataToFloat(nf, data, 20),DataToFloat(nf, data, 36),DataToFloat(nf, data, 52),
+            DataToFloat(nf, data, 8),DataToFloat(nf, data, 24),DataToFloat(nf, data, 40),DataToFloat(nf, data, 56),
+            DataToFloat(nf, data, 12),DataToFloat(nf, data, 28),DataToFloat(nf, data, 44),DataToFloat(nf, data, 60)
+        );
         result.transpose();
         return result;
     }
