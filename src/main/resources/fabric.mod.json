@@ -3,14 +3,15 @@
   "id": "kaimyentity",
   "version": "${version}",
 
-  "name": "KAIMyEntity",
+  "name": "KAIMyEntity-C",
   "description": "A forge & fabric mod to replace any entity with MMD models in Minecraft ",
   "authors": [
     "kjkjkAIStudio",
-    "asuka-mio"
+    "asuka-mio",
+    "Gengorou-C"
   ],
   "contact": {
-    "sources": "https://github.com/asuka-mio/KAIMyEntity"
+    "sources": "https://github.com/Gengorou-C/KAIMyEntity-C"
   },
 
   "license": "MIT",
