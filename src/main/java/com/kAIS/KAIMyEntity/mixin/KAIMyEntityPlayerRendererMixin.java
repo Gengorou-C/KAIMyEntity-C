@@ -160,6 +160,12 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 model.playerData.stateLayers[1] = targetState;
                 model.model.ChangeAnim(anim, 1);
             }
+            return;
+        }
+        if (!isLeftHand) {
+            AnimStateChangeOnce(model, MMDModelManager.PlayerData.EntityState.SwingRight, layer);
+        } else if (isLeftHand) {
+            AnimStateChangeOnce(model, MMDModelManager.PlayerData.EntityState.SwingLeft, layer);
         }
     }
     
