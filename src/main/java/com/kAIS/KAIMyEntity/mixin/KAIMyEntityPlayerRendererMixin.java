@@ -80,18 +80,27 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
 
                 //Layer 1
-                if ( ((entityIn.getActiveHand() == Hand.MAIN_HAND) && (entityIn.isUsingItem())) || ((entityIn.preferredHand == Hand.MAIN_HAND) && entityIn.handSwinging) && !entityIn.isSleeping()){
-                    String itemId = getItemId_in_ActiveHand(entityIn, Hand.MAIN_HAND);
-                    CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemRight, itemId, false, 1);
-                } else if (((entityIn.getActiveHand() == Hand.OFF_HAND) && (entityIn.isUsingItem())) || ((entityIn.preferredHand == Hand.OFF_HAND) && entityIn.handSwinging)) {
-                    String itemId = getItemId_in_ActiveHand(entityIn, Hand.OFF_HAND);
-                    CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemLeft, itemId, true, 1);
-                } else {
+                if(!entityIn.isUsingItem() && !entityIn.handSwinging && !entityIn.isSleeping()){
                     if (mwpd.playerData.stateLayers[1] != MMDModelManager.PlayerData.EntityState.Idle) {
                         mwpd.playerData.stateLayers[1] = MMDModelManager.PlayerData.EntityState.Idle;
                         model.ChangeAnim(0, 1);
                     }
+                }else{
+                    if((entityIn.getActiveHand() == Hand.MAIN_HAND) && entityIn.isUsingItem()){
+                        String itemId = getItemId_in_ActiveHand(entityIn, Hand.MAIN_HAND);
+                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemRight, itemId, "Right", "using", 1);
+                    }else if((entityIn.preferredHand == Hand.MAIN_HAND) && entityIn.handSwinging){
+                        String itemId = getItemId_in_ActiveHand(entityIn, Hand.MAIN_HAND);
+                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.SwingRight, itemId, "Right", "swinging", 1);
+                    }else if((entityIn.getActiveHand() == Hand.OFF_HAND) && entityIn.isUsingItem()){
+                        String itemId = getItemId_in_ActiveHand(entityIn, Hand.OFF_HAND);
+                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemLeft, itemId, "Left", "using", 1);
+                    }else if((entityIn.preferredHand == Hand.OFF_HAND) && entityIn.handSwinging){
+                        String itemId = getItemId_in_ActiveHand(entityIn, Hand.OFF_HAND);
+                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.SwingLeft, itemId, "Left", "swinging", 1);
+                    }
                 }
+
 
                 //Layer 2
                 if (entityIn.isSneaking()) {
@@ -153,8 +162,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         }
     }
 
-    void CustomItemActiveAnim(MMDModelManager.ModelWithPlayerData model, MMDModelManager.PlayerData.EntityState targetState, String itemName, boolean isLeftHand, Integer layer) {
-        long anim = MMDAnimManager.GetAnimModel(model.model, String.format("itemActive_%s_%s", itemName, isLeftHand ? "left" : "right"));
+    void CustomItemActiveAnim(MMDModelManager.ModelWithPlayerData model, MMDModelManager.PlayerData.EntityState targetState, String itemName, String activeHand, String handState, Integer layer) {
+        long anim = MMDAnimManager.GetAnimModel(model.model, String.format("itemActive_%s_%s_%s", itemName, activeHand, handState));
         if (anim != 0) {
             if (model.playerData.stateLayers[1] != targetState) {
                 model.playerData.stateLayers[1] = targetState;
@@ -162,9 +171,9 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             }
             return;
         }
-        if (!isLeftHand) {
+        if (targetState == MMDModelManager.PlayerData.EntityState.ItemRight || targetState == MMDModelManager.PlayerData.EntityState.SwingRight) {
             AnimStateChangeOnce(model, MMDModelManager.PlayerData.EntityState.SwingRight, layer);
-        } else if (isLeftHand) {
+        } else if (targetState == MMDModelManager.PlayerData.EntityState.ItemLeft || targetState == MMDModelManager.PlayerData.EntityState.SwingLeft) {
             AnimStateChangeOnce(model, MMDModelManager.PlayerData.EntityState.SwingLeft, layer);
         }
     }
