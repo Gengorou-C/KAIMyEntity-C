@@ -165,9 +165,9 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
     void CustomItemActiveAnim(MMDModelManager.ModelWithPlayerData model, MMDModelManager.PlayerData.EntityState targetState, String itemName, String activeHand, String handState, Integer layer) {
         long anim = MMDAnimManager.GetAnimModel(model.model, String.format("itemActive_%s_%s_%s", itemName, activeHand, handState));
         if (anim != 0) {
-            if (model.playerData.stateLayers[1] != targetState) {
-                model.playerData.stateLayers[1] = targetState;
-                model.model.ChangeAnim(anim, 1);
+            if (model.playerData.stateLayers[layer] != targetState) {
+                model.playerData.stateLayers[layer] = targetState;
+                model.model.ChangeAnim(anim, layer);
             }
             return;
         }
@@ -204,13 +204,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         String itemId;
         String strHand;
         String handState;
-
-        if (axis == "x" ){
-            result = 90.0f;
-        } else if ( axis == "z"){
-            result = 180.0f;
-        }
-
+        
         itemId = getItemId_in_ActiveHand(entityIn,iHand);
 
         if (iHand == Hand.MAIN_HAND){
