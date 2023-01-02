@@ -153,6 +153,8 @@ public class MMDModelManager {
             put(EntityState.Sprint, "sprint");
             put(EntityState.Air, "air");
             put(EntityState.OnClimbable, "onClimbable");
+            put(EntityState.OnClimbableUp, "onClimbableUp");
+            put(EntityState.OnClimbableDown, "onClimbableDown");
             put(EntityState.Swim, "swim");
             put(EntityState.Ride, "ride");
             put(EntityState.Sleep, "sleep");
@@ -168,6 +170,6 @@ public class MMDModelManager {
         public EntityState[] stateLayers;
         ByteBuffer matBuffer;
 
-        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse}
+        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, OnClimbableUp, OnClimbableDown, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse}
     }
 }
