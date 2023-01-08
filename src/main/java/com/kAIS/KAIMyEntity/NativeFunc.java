@@ -17,6 +17,7 @@ public class NativeFunc {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
     private static final HashMap<runtimeUrlRes, String> urlMap = new HashMap<runtimeUrlRes, String>() {
         {
+            put(runtimeUrlRes.windows, "https://github.com/Gengorou-C/KAIMyEntitySaba/releases/download/20221215/KAIMyEntitySaba.dll");
             put(runtimeUrlRes.android_arch64, "https://github.com.cnpmjs.org/asuka-mio/KAIMyEntitySaba/releases/download/crossplatform/KAIMyEntitySaba.so");
             put(runtimeUrlRes.android_arch64_libc, "https://github.com.cnpmjs.org/asuka-mio/KAIMyEntitySaba/releases/download/crossplatform/libc++_shared.so");
         }
@@ -57,8 +58,7 @@ public class NativeFunc {
 
     private void DownloadRuntime() throws Exception {
         if (isWindows) {
-            KAIMyEntityClient.logger.info("Not support!");
-            throw new Error();
+            DownloadSingleFile(new URL(urlMap.get(runtimeUrlRes.windows)), new File(gameDirectory, "KAIMyEntitySaba.dll"));
         }
         if (isLinux && !isAndroid) {
             KAIMyEntityClient.logger.info("Not support!");
@@ -202,6 +202,6 @@ public class NativeFunc {
     public native void DeleteAnimation(long anim);
 
     enum runtimeUrlRes {
-        android_arch64, android_arch64_libc
+        windows,android_arch64, android_arch64_libc
     }
 }
