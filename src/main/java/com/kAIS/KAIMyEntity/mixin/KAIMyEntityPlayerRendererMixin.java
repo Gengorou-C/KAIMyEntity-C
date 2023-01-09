@@ -1,6 +1,6 @@
 package com.kAIS.KAIMyEntity.mixin;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import com.kAIS.KAIMyEntity.renderer.IMMDModel;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
@@ -119,10 +119,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            mwpd.loadModelProperties(KAIMyEntity.reloadProperties);
+            mwpd.loadModelProperties(KAIMyEntityClient.reloadProperties);
             float size = sizeOfModel(mwpd);
-            if(KAIMyEntity.reloadProperties)
-                KAIMyEntity.reloadProperties = false;
+            if(KAIMyEntityClient.reloadProperties)
+                KAIMyEntityClient.reloadProperties = false;
             matrixStackIn.scale(size, size, size);
             RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentProgram);
             model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
