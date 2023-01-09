@@ -1,6 +1,5 @@
 package com.kAIS.KAIMyEntity.register;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
@@ -57,15 +56,15 @@ public class KAIMyEntityRegisterClient {
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyReloadProperties.wasPressed()) {
-                KAIMyEntity.reloadProperties = true;
+                KAIMyEntityClient.reloadProperties = true;
             }
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyChangeProgram.wasPressed()) {
-                KAIMyEntity.usingMMDShader = 1 - KAIMyEntity.usingMMDShader;
-                if(KAIMyEntity.usingMMDShader == 0)
+                KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
+                if(KAIMyEntityClient.usingMMDShader == 0)
                     MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("Default shader"));
-                if(KAIMyEntity.usingMMDShader == 1)
+                if(KAIMyEntityClient.usingMMDShader == 1)
                     MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("MMDShader"));
             }
         });
