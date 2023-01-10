@@ -15,6 +15,7 @@ import java.util.Properties;
 
 public class MMDModelManager {
     static Map<String, Model> models;
+    static String gameDirectory = MinecraftClient.getInstance().runDirectory.getAbsolutePath();
 
     public static void Init() {
         models = new HashMap<>();
@@ -22,7 +23,7 @@ public class MMDModelManager {
 
     public static IMMDModel LoadModel(String modelName, long layerCount) {
         //Model path
-        File modelDir = new File(MinecraftClient.getInstance().runDirectory, "KAIMyEntity/" + modelName);
+        File modelDir = new File(gameDirectory + "/KAIMyEntity/" + modelName);
         String modelDirStr = modelDir.getAbsolutePath();
 
         String modelFilenameStr;
@@ -131,7 +132,7 @@ public class MMDModelManager {
         public void loadModelProperties(boolean forceReload){
             if (loadedProperties && !forceReload)
                 return;
-            String path2Properties = MinecraftClient.getInstance().runDirectory.toString() + "/KAIMyEntity/" + modelName + "/model.properties";
+            String path2Properties = gameDirectory + "/KAIMyEntity/" + modelName + "/model.properties";
             try {
                 InputStream istream = new FileInputStream(path2Properties);
                 properties.load(istream);
