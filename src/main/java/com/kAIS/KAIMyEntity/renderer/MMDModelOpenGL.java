@@ -47,6 +47,11 @@ public class MMDModelOpenGL implements IMMDModel {
     static int K_sampler2Location;
     static int KAIMyLocationV;
     static int KAIMyLocationF;
+    static int I_positionLocation;
+    static int I_normalLocation;
+    static int I_uv0Location;
+    static int I_uv2Location;
+    static int I_colorLocation;
     static boolean isShaderInited = false;
     static int MMDShaderProgram;
     long model;
@@ -436,6 +441,38 @@ public class MMDModelOpenGL implements IMMDModel {
         if(KAIMyLocationF != -1)
             GL46C.glUniform1i(KAIMyLocationF, 1);
 
+        //Iris
+        if(I_positionLocation != -1){
+            GL46C.glEnableVertexAttribArray(I_positionLocation);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, vertexBufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, posBuffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribPointer(I_positionLocation, 3, GL46C.GL_FLOAT, false, 0, 0);
+        }
+        if(I_normalLocation != -1){
+            GL46C.glEnableVertexAttribArray(I_normalLocation);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, normalBufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, norBuffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribPointer(I_normalLocation, 3, GL46C.GL_FLOAT, false, 0, 0);
+        }
+        if(I_uv0Location != -1){
+            GL46C.glEnableVertexAttribArray(I_uv0Location);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, texcoordBufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, uv0Buffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribPointer(I_uv0Location, 2, GL46C.GL_FLOAT, false, 0, 0);
+        }
+        if(I_uv2Location != -1){
+            GL46C.glEnableVertexAttribArray(I_uv2Location);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, uv2BufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, uv2Buffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribIPointer(I_uv2Location, 2, GL46C.GL_INT, 0, 0);
+        }
+        if(I_colorLocation != -1){
+            GL46C.glEnableVertexAttribArray(I_colorLocation);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, colorBufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, colorBuffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribPointer(I_colorLocation, 4, GL46C.GL_FLOAT, false, 0, 0);
+        }
+
         //Draw
         RenderSystem.activeTexture(GL46C.GL_TEXTURE0);
         long subMeshCount = nf.GetSubMeshCount(model);
@@ -505,6 +542,12 @@ public class MMDModelOpenGL implements IMMDModel {
         K_sampler2Location = GlStateManager._glGetUniformLocation(shaderProgram, "K_Sampler2");
         KAIMyLocationV = GlStateManager._glGetUniformLocation(shaderProgram, "KAIMyEntityV");
         KAIMyLocationF = GlStateManager._glGetUniformLocation(shaderProgram, "KAIMyEntityF");
+
+        I_positionLocation = GlStateManager._glGetAttribLocation(shaderProgram, "iris_Position");
+        I_normalLocation = GlStateManager._glGetAttribLocation(shaderProgram, "iris_Normal");
+        I_uv0Location = GlStateManager._glGetAttribLocation(shaderProgram, "iris_UV0");
+        I_uv2Location = GlStateManager._glGetAttribLocation(shaderProgram, "iris_UV2");
+        I_colorLocation = GlStateManager._glGetAttribLocation(shaderProgram, "iris_Color");
     }
 
     public void setUniforms(Shader shader, MatrixStack deliverStack){
