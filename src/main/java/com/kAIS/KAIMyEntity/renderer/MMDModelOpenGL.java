@@ -23,37 +23,33 @@ import java.nio.FloatBuffer;
 
 public class MMDModelOpenGL implements IMMDModel {
     static NativeFunc nf;
-    static int shaderProgram;
-    static int positionLocation;
-    static int colorLocation;
-    static int uv0Location;
-    static int uv1Location;
-    static int uv2Location;
-    static int normalLocation;
-    static int projMatLocation;
-    static int modelViewLocation;
-    static int sampler0Location;
-    static int sampler1Location;
-    static int sampler2Location;
-    static int light0Location;
-    static int light1Location;
-    static int K_positionLocation;
-    static int K_normalLocation;
-    static int K_uv0Location;
-    static int K_uv2Location;
-    static int K_projMatLocation;
-    static int K_modelViewLocation;
-    static int K_sampler0Location;
-    static int K_sampler2Location;
-    static int KAIMyLocationV;
-    static int KAIMyLocationF;
-    static int I_positionLocation;
-    static int I_normalLocation;
-    static int I_uv0Location;
-    static int I_uv2Location;
-    static int I_colorLocation;
     static boolean isShaderInited = false;
     static int MMDShaderProgram;
+    int shaderProgram;
+
+    int positionLocation;
+    int normalLocation;
+    int uv0Location, uv1Location, uv2Location;
+    int colorLocation;
+    int projMatLocation;
+    int modelViewLocation;
+    int sampler0Location, sampler1Location, sampler2Location;
+    int light0Location, light1Location;
+
+    int K_positionLocation;
+    int K_normalLocation;
+    int K_uv0Location, K_uv2Location;
+    int K_projMatLocation;
+    int K_modelViewLocation;
+    int K_sampler0Location, K_sampler2Location;
+    int KAIMyLocationV;
+    int KAIMyLocationF;
+
+    int I_positionLocation;
+    int I_normalLocation;
+    int I_uv0Location, I_uv2Location;
+    int I_colorLocation;
+
     long model;
     String modelDir;
     int vertexCount;
@@ -80,10 +76,6 @@ public class MMDModelOpenGL implements IMMDModel {
         //Init Shader
         ShaderProvider.Init();
         MMDShaderProgram = ShaderProvider.getProgram();
-        shaderProgram = MMDShaderProgram;
-
-        //Init ShaderPropLocation
-        updateLocation(shaderProgram);
         isShaderInited = true;
     }
 
@@ -517,7 +509,7 @@ public class MMDModelOpenGL implements IMMDModel {
         }
     }
 
-    static void updateLocation(int shaderProgram){
+    void updateLocation(int shaderProgram){
         positionLocation = GlStateManager._glGetAttribLocation(shaderProgram, "Position");
         normalLocation = GlStateManager._glGetAttribLocation(shaderProgram, "Normal");
         uv0Location = GlStateManager._glGetAttribLocation(shaderProgram, "UV0");
