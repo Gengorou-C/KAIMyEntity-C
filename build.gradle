@@ -76,3 +76,7 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+
+runClient{
+	args "--username","Dev"
+}

@@ -32,7 +32,7 @@ public class KAIMyEntityClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        logger.info("KAIMyEntity Init begin...");
+        logger.info("KAIMyEntity InitClient begin...");
         checkKAIMyEntityFolder();
         MMDModelManager.Init();
         logger.info("MMDModelManager.Init() finished");
@@ -42,7 +42,7 @@ public class KAIMyEntityClient implements ClientModInitializer {
         logger.info("MMDAnimManager.Init() finished");
         KAIMyEntityRegisterClient.Register();
         logger.info("KAIMyEntityRegisterClient.Register() finished");
-        logger.info("KAIMyEntity preInit successful.");
+        logger.info("KAIMyEntity InitClient successful.");
     }
 
     private static String validateFilename(String filename, String intendedDir) throws java.io.IOException {
