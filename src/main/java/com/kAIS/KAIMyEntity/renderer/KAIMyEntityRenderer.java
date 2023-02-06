@@ -1,5 +1,8 @@
 package com.kAIS.KAIMyEntity.renderer;
 
+import org.joml.Quaternionf;
+
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.Frustum;
@@ -48,8 +51,26 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(entityIn instanceof LivingEntity)
                 if(((LivingEntity) entityIn).isBaby())
                     matrixStackIn.scale(0.5f, 0.5f, 0.5f);
-            RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullProgram);
-            model.model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
+
+            if(KAIMyEntityClient.calledFrom(6).contains("Inventory")){
+                RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+                MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
+                PTS_modelViewStack.push();
+                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
+                Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getPitch() * ((float)Math.PI / 180F));
+                Quaternionf quaternionf2 = (new Quaternionf()).rotateY(-entityIn.getYaw() * ((float)Math.PI / 180F));
+                quaternionf.mul(quaternionf1);
+                quaternionf.mul(quaternionf2);
+                PTS_modelViewStack.multiply(quaternionf);
+                RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullProgram);
+                model.model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                PTS_modelViewStack.pop();
+            }else{
+                RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullProgram);
+                model.model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
+            }
             matrixStackIn.pop();
         }
     }

@@ -21,6 +21,7 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Hand;
+import net.minecraft.world.GameMode;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -124,9 +125,29 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             if(KAIMyEntityClient.reloadProperties)
                 KAIMyEntityClient.reloadProperties = false;
             matrixStackIn.scale(size, size, size);
-            RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentProgram);
-            model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
-
+            if(KAIMyEntityClient.calledFrom(6).contains("Inventory")){
+                RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+                MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
+                PTS_modelViewStack.push();
+                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                if(MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE)
+                    PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
+                Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
+                Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getPitch() * ((float)Math.PI / 180F));
+                Quaternionf quaternionf2 = (new Quaternionf()).rotateY(-entityIn.bodyYaw * ((float)Math.PI / 180F));
+                quaternionf.mul(quaternionf1);
+                quaternionf.mul(quaternionf2);
+                PTS_modelViewStack.multiply(quaternionf);
+                RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentProgram);
+                model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                PTS_modelViewStack.pop();
+                matrixStackIn.multiply(quaternionf2);
+                matrixStackIn.scale(0.09f, 0.09f, 0.09f);
+            }else{
+                RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentProgram);
+                model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
+            }
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;
             nf.GetRightHandMat(model.GetModelLong(), mwpd.playerData.rightHandMat);
