@@ -51,7 +51,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(entityIn instanceof LivingEntity)
                 if(((LivingEntity) entityIn).isBaby())
                     matrixStackIn.scale(0.5f, 0.5f, 0.5f);
-            if(KAIMyEntityClient.calledFrom(6).contains("Inventory")){
+            if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
                 PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
