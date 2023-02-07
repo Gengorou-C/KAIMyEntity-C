@@ -218,9 +218,9 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.DeleteModel(model.model);
     }
 
-    public void Render(Entity entityIn, float entityYaw, MatrixStack mat, int packedLight) {
+    public void Render(Entity entityIn, float entityYaw, float entityPitch, MatrixStack mat, int packedLight) {
         Update();
-        RenderModel(entityIn, entityYaw, mat);
+        RenderModel(entityIn, entityYaw, entityPitch, mat);
     }
 
     public void ChangeAnim(long anim, long layer) {
@@ -243,7 +243,7 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.UpdateModel(model);
     }
 
-    void RenderModel(Entity entityIn, float entityYaw, MatrixStack deliverStack) {
+    void RenderModel(Entity entityIn, float entityYaw, float entityPitch, MatrixStack deliverStack) {
         MinecraftClient minecraft = MinecraftClient.getInstance();
         light0Direction = new Vec3f(1.0f, 0.75f, 0.0f);
         light1Direction = new Vec3f(-1.0f, 0.75f, 0.0f);
@@ -253,6 +253,7 @@ public class MMDModelOpenGL implements IMMDModel {
         light1Direction.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion(entityYaw));
 
         deliverStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-entityYaw));
+        deliverStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(entityPitch));
         deliverStack.scale(0.09f, 0.09f, 0.09f);
         
         if(KAIMyEntityClient.usingMMDShader == 0){

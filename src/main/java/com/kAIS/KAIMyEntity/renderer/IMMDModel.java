@@ -4,7 +4,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 
 public interface IMMDModel {
-    void Render(Entity entityIn, float entityYaw, MatrixStack mat, int packedLight);
+    void Render(Entity entityIn, float entityYaw, float entityPitch, MatrixStack mat, int packedLight);
 
     void ChangeAnim(long anim, long layer);
 

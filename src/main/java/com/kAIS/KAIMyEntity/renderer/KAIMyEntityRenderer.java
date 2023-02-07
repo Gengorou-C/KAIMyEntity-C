@@ -51,8 +51,6 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(entityIn instanceof LivingEntity)
                 if(((LivingEntity) entityIn).isBaby())
                     matrixStackIn.scale(0.5f, 0.5f, 0.5f);
-            RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullShader);
-            model.model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory")){
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
@@ -66,11 +64,11 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                 quaternion.hamiltonProduct(quaternion2);
                 PTS_modelViewStack.multiply(quaternion);
                 RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullShader);
-                model.model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                model.model.Render(entityIn, entityYaw, 0.0f, PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.pop();
             }else{
                 RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullShader);
-                model.model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
+                model.model.Render(entityIn, entityYaw, 0.0f, matrixStackIn, packedLightIn);
             }
             matrixStackIn.pop();
         }

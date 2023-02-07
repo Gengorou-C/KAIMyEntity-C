@@ -43,6 +43,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
     @Inject(method = {"render"}, at = @At("HEAD"), cancellable = true)
     public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int packedLightIn, CallbackInfo ci) {
         IMMDModel model = null;
+        float bodyYaw = entityIn.bodyYaw;
+        float bodyPitch = 0.0f;
         MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + entityIn.getName().getString());
         if (m == null)
             m = MMDModelManager.GetPlayerModel("EntityPlayer");
@@ -62,6 +64,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Die, 0);
                 } else if (entityIn.isFallFlying()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.ElytraFly, 0);
+                    bodyPitch = entityIn.getPitch();
                 } else if (entityIn.isSleeping()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
                 } else if (entityIn.hasVehicle()) {
@@ -72,6 +75,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     }
                 } else if (entityIn.isSwimming()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
+                    bodyPitch = entityIn.getPitch();
                 } else if (entityIn.isClimbing()) {
                     if(entityIn.getY() - entityIn.prevY > 0){
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbableUp, 0);
@@ -141,13 +145,13 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 quaternion.hamiltonProduct(quaternion2);
                 PTS_modelViewStack.multiply(quaternion);
                 RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentShader);
-                model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                model.Render(entityIn, entityYaw, 0.0f, PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.pop();
                 matrixStackIn.multiply(quaternion2);
                 matrixStackIn.scale(0.09f, 0.09f, 0.09f);
             }else{
                 RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentShader);
-                model.Render(entityIn, entityYaw, matrixStackIn, packedLightIn);
+                model.Render(entityIn, bodyYaw, bodyPitch, matrixStackIn, packedLightIn);
             }
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;
