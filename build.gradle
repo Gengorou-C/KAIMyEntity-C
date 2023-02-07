@@ -79,4 +79,6 @@ publishing {
 
 runClient{
 	args "--username","Dev"
+	args "--width","1920"
+	args "--height","1080"
 }

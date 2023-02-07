@@ -40,7 +40,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             animName = "ridden";
         } else if (entityIn.isSwimming()) {
             animName = "swim";
-        } else if (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f) {
+        } else if ( (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f) && entityIn.getVehicle() == null) {
             animName = "walk";
         } else {
             animName = "idle";
