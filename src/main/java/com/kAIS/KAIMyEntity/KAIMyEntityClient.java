@@ -6,6 +6,7 @@ import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.Vec3f;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -130,5 +131,15 @@ public class KAIMyEntityClient implements ClientModInitializer {
             return "";
         }
         return steArray[i].getClassName();
+    }
+
+    public static Vec3f str2Vec3f(String arg){
+        Vec3f vector3f = new Vec3f();
+        String[] splittedStr = arg.split(",");
+        if (splittedStr.length != 3){
+            return new Vec3f(0.0f, 0.0f, 0.0f);
+        }
+        vector3f.set( Float.valueOf(splittedStr[0]), Float.valueOf(splittedStr[1]), Float.valueOf(splittedStr[2]) );
+        return vector3f;
     }
 }
