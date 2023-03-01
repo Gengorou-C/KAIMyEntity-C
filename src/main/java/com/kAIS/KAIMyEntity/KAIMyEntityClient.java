@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Vector3f;
 
 public class KAIMyEntityClient implements ClientModInitializer {
     public static final Logger logger = LogManager.getLogger();
@@ -130,5 +131,17 @@ public class KAIMyEntityClient implements ClientModInitializer {
             return "";
         }
         return steArray[i].getClassName();
+    }
+
+    public static Vector3f str2Vec3f(String arg){
+        Vector3f vector3f = new Vector3f();
+        String[] splittedStr = arg.split(",");
+        if (splittedStr.length != 3){
+            return new Vector3f(0.0f);
+        }
+        vector3f.x = Float.valueOf(splittedStr[0]);
+        vector3f.y = Float.valueOf(splittedStr[1]);
+        vector3f.z = Float.valueOf(splittedStr[2]);
+        return vector3f;
     }
 }
