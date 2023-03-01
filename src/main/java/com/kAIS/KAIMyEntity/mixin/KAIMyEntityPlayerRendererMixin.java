@@ -141,13 +141,13 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            float size = sizeOfModel(mwpd);
+            float[] size = sizeOfModel(mwpd);
             if(KAIMyEntityClient.reloadProperties)
                 KAIMyEntityClient.reloadProperties = false;
-            matrixStackIn.scale(size, size, size);
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexProgram);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.push();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
@@ -163,8 +163,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.pop();
                 matrixStackIn.multiply(quaternionf2);
+                matrixStackIn.scale(size[1], size[1], size[1]);
                 matrixStackIn.scale(0.09f, 0.09f, 0.09f);
             }else{
+                matrixStackIn.scale(size[0], size[0], size[0]);
                 RenderSystem.setShader(GameRenderer::getRenderTypeEntityTranslucentProgram);
                 model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, matrixStackIn, packedLightIn);
             }
@@ -277,10 +279,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         return result;
     }
 
-    float sizeOfModel(ModelWithPlayerData mwpd){
-        float size = 1.0f;
-        if(mwpd.properties.getProperty("size") != null)
-            size = Float.valueOf(mwpd.properties.getProperty("size"));
+    float[] sizeOfModel(ModelWithPlayerData mwpd){
+        float[] size = new float[2];
+        size[0] = (mwpd.properties.getProperty("size") == null) ? 1.0f : Float.valueOf(mwpd.properties.getProperty("size"));
+        size[1] = (mwpd.properties.getProperty("size_in_inventory") == null) ? 1.0f : Float.valueOf(mwpd.properties.getProperty("size_in_inventory"));
         return size;
     }
 }
