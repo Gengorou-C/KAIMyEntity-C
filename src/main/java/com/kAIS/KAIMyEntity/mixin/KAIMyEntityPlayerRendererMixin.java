@@ -147,10 +147,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexProgram);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.push();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 if(MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE)
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
                 Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
