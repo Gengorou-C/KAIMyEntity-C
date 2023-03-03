@@ -56,10 +56,10 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.push();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0f);
                 Quaternion quaternion1 = Vec3f.POSITIVE_X.getDegreesQuaternion(-entityIn.getPitch());
                 Quaternion quaternion2 = Vec3f.POSITIVE_Y.getDegreesQuaternion(-entityIn.getYaw());
