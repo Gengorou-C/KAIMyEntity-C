@@ -102,6 +102,8 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 * 特定のアイテムを特定の腕で使ったときのモーション  
 (itemActive_[itemName]\_[Left or Right]_[using or swinging].vmd)
 * 乗馬中の移動(onHorse.vmd)
+* 匍匐前進(crawl.vmd)
+* 伏せ(lieDown.vmd)
 
 ### other
 
@@ -123,4 +125,3 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 ### やりたいこと(達成時期どころか、可能かどうかすら不明のものを含む)
 
 * エリトラを描画
-* モーション追加(匍匐前進:crawling.vmd、伏せる:lieDown.vmd)

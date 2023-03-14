@@ -62,6 +62,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         Vector3f flyingTrans = mwpd.properties.getProperty("flyingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("flyingTrans"));
         float swimmingPitch = mwpd.properties.getProperty("swimmingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("swimmingPitch"));
         Vector3f swimmingTrans = mwpd.properties.getProperty("swimmingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("swimmingTrans"));
+        float crawlingPitch = mwpd.properties.getProperty("crawlingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("crawlingPitch"));
+        Vector3f crawlingTrans = mwpd.properties.getProperty("crawlingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("crawlingTrans"));
 
         if (model != null) {
             if (!mwpd.playerData.playCustomAnim) {
@@ -101,6 +103,14 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     }
                 } else if (entityIn.isSprinting() && !entityIn.isSneaking()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sprint, 0);
+                } else if (entityIn.isCrawling()){
+                    if(entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f){
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Crawl, 0);
+                    }else {
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.LieDown, 0);
+                    }
+                    bodyPitch = crawlingPitch;
+                    entityTrans = crawlingTrans;
                 } else if (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Walk, 0);
                 } else {
@@ -131,7 +141,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
 
 
                 //Layer 2
-                if (entityIn.isSneaking()) {
+                if (entityIn.isSneaking() && !entityIn.isCrawling()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sneak, 2);
                 } else {
                     if (mwpd.playerData.stateLayers[2] != MMDModelManager.PlayerData.EntityState.Idle) {

@@ -165,12 +165,14 @@ public class MMDModelManager {
             put(EntityState.SwingLeft, "swingLeft");
             put(EntityState.Sneak, "sneak");
             put(EntityState.OnHorse, "onHorse");
+            put(EntityState.Crawl, "crawl");
+            put(EntityState.LieDown, "lieDown");
         }};
         public boolean playCustomAnim; //Custom animation played in layer 0.
         public long rightHandMat, leftHandMat;
         public EntityState[] stateLayers;
         ByteBuffer matBuffer;
 
-        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, OnClimbableUp, OnClimbableDown, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse}
+        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, OnClimbableUp, OnClimbableDown, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse, Crawl,LieDown}
     }
 }
