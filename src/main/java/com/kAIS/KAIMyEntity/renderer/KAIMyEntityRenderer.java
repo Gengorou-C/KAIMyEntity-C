@@ -35,6 +35,9 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
     public void render(T entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn) {
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         String animName;
+        float bodyYaw = entityYaw;
+        float bodyPitch = 0.0f;
+        Vector3f entityTrans = new Vector3f(0.0f);
         if (entityIn.hasPassengers() && (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f)) {
             animName = "driven";
         } else if (entityIn.hasPassengers()) {
@@ -48,12 +51,22 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         }
         MMDModelManager.Model model = MMDModelManager.GetNotPlayerModel(modelName, animName);
         model.loadModelProperties(false);
+        float sleepingPitch = model.properties.getProperty("sleepingPitch") == null ? 0.0f : Float.valueOf(model.properties.getProperty("sleepingPitch"));
+        Vector3f sleepingTrans = model.properties.getProperty("sleepingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(model.properties.getProperty("sleepingTrans"));
         float[] size = sizeOfModel(model);
         if (model != null) {
             matrixStackIn.push();
-            if(entityIn instanceof LivingEntity)
-                if(((LivingEntity) entityIn).isBaby())
+            if(entityIn instanceof LivingEntity){
+                if(((LivingEntity) entityIn).isSleeping()){
+                    animName = "sleep";
+                    bodyYaw = ((LivingEntity) entityIn).getSleepingDirection().asRotation() + 180.0f;
+                    bodyPitch = sleepingPitch;
+                    entityTrans = sleepingTrans;
+                }
+                if(((LivingEntity) entityIn).isBaby()){
                     matrixStackIn.scale(0.5f, 0.5f, 0.5f);
+                }
+            }
 
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexProgram);
@@ -74,7 +87,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             }else{
                 matrixStackIn.scale(size[0], size[0], size[0]);
                 RenderSystem.setShader(GameRenderer::getRenderTypeEntityCutoutNoNullProgram);
-                model.model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), matrixStackIn, packedLightIn);
+                model.model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, matrixStackIn, packedLightIn);
             }
             matrixStackIn.pop();
         }
