@@ -376,13 +376,11 @@ public class MMDModelOpenGL implements IMMDModel {
             }
             if(sampler1Location != -1){
                 RenderSystem.activeTexture(GL46C.GL_TEXTURE1);
-                RenderSystem.enableTexture();
                 RenderSystem.bindTexture(lightMapMaterial.tex);
                 GL46C.glUniform1i(sampler1Location, 1);
             }
             if(sampler2Location != -1){
                 RenderSystem.activeTexture(GL46C.GL_TEXTURE2);
-                RenderSystem.enableTexture();
                 RenderSystem.bindTexture(lightMapMaterial.tex);
                 GL46C.glUniform1i(sampler2Location, 2);
             }
@@ -426,7 +424,6 @@ public class MMDModelOpenGL implements IMMDModel {
         }
         if(K_sampler2Location != -1){
             RenderSystem.activeTexture(GL46C.GL_TEXTURE2);
-            RenderSystem.enableTexture();
             RenderSystem.bindTexture(lightMapMaterial.tex);
             GL46C.glUniform1i(K_sampler2Location, 2);
         }

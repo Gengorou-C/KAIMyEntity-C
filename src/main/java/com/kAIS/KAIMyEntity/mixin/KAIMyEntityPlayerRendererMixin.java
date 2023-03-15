@@ -17,7 +17,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Hand;
@@ -190,7 +190,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.MAIN_HAND, "x");
             matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             matrixStackIn.scale(10.0f, 10.0f, 10.0f);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getMainHandStack(), ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getMainHandStack(), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
 
             nf.GetLeftHandMat(model.GetModelLong(), mwpd.playerData.leftHandMat);
@@ -201,7 +201,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.OFF_HAND, "x");
             matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             matrixStackIn.scale(10.0f, 10.0f, 10.0f);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
         }
         ci.cancel();//Added By FMyuchuan. | 隐藏模型脚下的史蒂夫
