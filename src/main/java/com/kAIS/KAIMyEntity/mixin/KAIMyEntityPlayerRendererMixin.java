@@ -157,12 +157,21 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexProgram);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.push();
-                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
-                PTS_modelViewStack.scale(size[1], size[1], size[1]);
-                if(MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE)
+                int PosX_in_inventory;
+                int PosY_in_inventory;
+                if(MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE){
+                    PosX_in_inventory = (MinecraftClient.getInstance().currentScreen.width - 176) / 2;
+                    PosY_in_inventory = (MinecraftClient.getInstance().currentScreen.height - 166) / 2;
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
+                }else{
+                    PosX_in_inventory = (MinecraftClient.getInstance().currentScreen.width - 121) / 2;
+                    PosY_in_inventory = (MinecraftClient.getInstance().currentScreen.height - 195) / 2;
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
+                }
+                PTS_modelViewStack.scale(size[1], size[1], size[1]);
+                PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);
                 Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
                 Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getPitch() * ((float)Math.PI / 180F));
                 Quaternionf quaternionf2 = (new Quaternionf()).rotateY(-entityIn.bodyYaw * ((float)Math.PI / 180F));

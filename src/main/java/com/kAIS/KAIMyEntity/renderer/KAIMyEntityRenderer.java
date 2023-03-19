@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -71,9 +72,13 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexProgram);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
+                int PosX_in_inventory;
+                int PosY_in_inventory;
+                PosX_in_inventory = (MinecraftClient.getInstance().currentScreen.width - 176) / 2;
+                PosY_in_inventory = (MinecraftClient.getInstance().currentScreen.height - 166) / 2;
+                PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+60, -950.0);
                 PTS_modelViewStack.push();
-                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
                 Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getPitch() * ((float)Math.PI / 180F));
