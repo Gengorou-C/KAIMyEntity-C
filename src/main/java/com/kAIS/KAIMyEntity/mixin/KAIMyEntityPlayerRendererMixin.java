@@ -9,6 +9,7 @@ import com.kAIS.KAIMyEntity.renderer.MMDModelManager.ModelWithPlayerData;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
@@ -154,14 +155,14 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             float[] size = sizeOfModel(mwpd);
             if(KAIMyEntityClient.reloadProperties)
                 KAIMyEntityClient.reloadProperties = false;
-            if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
+            if(KAIMyEntityClient.calledFrom(6).contains("InventoryScreen") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexProgram);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
                 PTS_modelViewStack.push();
                 int PosX_in_inventory;
                 int PosY_in_inventory;
                 if(MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE){
-                    PosX_in_inventory = (MinecraftClient.getInstance().currentScreen.width - 176) / 2;
+                    PosX_in_inventory = ((InventoryScreen) MinecraftClient.getInstance().currentScreen).getRecipeBookWidget().findLeftEdge(MinecraftClient.getInstance().currentScreen.width, 176);
                     PosY_in_inventory = (MinecraftClient.getInstance().currentScreen.height - 166) / 2;
                     PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
@@ -213,6 +214,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
         }
+        
+        //for(int i=0; i<10; i++){
+        //    KAIMyEntityClient.drawText(i+":"+KAIMyEntityClient.debugStr[i], 0, i*15);
+        //}
         ci.cancel();//Added By FMyuchuan. | 隐藏模型脚下的史蒂夫
     }
 
