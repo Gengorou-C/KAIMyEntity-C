@@ -15,6 +15,7 @@ public class MMDTextureManager {
     public static void Init() {
         nf = NativeFunc.GetInst();
         textures = new HashMap<>();
+        KAIMyEntityClient.logger.info("MMDTextureManager.Init() finished");
     }
 
     public static Texture GetTexture(String filename) {

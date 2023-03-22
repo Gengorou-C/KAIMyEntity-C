@@ -1,5 +1,6 @@
 package com.kAIS.KAIMyEntity.renderer;
 
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import net.minecraft.client.MinecraftClient;
 
@@ -18,6 +19,7 @@ public class MMDAnimManager {
         nf = NativeFunc.GetInst();
         animStatic = new HashMap<>();
         animModel = new HashMap<>();
+        KAIMyEntityClient.logger.info("MMDAnimManager.Init() finished");
     }
 
     public static void AddModel(IMMDModel model) {

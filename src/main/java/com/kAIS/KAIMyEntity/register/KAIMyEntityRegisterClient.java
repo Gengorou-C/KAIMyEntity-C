@@ -94,6 +94,8 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntityNetworkPack.DoInClient(opCode, playerUUID, arg0);
             });
         });
+        
+        KAIMyEntityClient.logger.info("KAIMyEntityRegisterClient.Register() finished");
     }
 
     public static void onKeyResetPhysicsDown() {
