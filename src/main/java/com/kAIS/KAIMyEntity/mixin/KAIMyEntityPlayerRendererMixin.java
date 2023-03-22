@@ -42,6 +42,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
 
     @Inject(method = {"render"}, at = @At("HEAD"), cancellable = true)
     public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int packedLightIn, CallbackInfo ci) {
+        MinecraftClient MCinstance = MinecraftClient.getInstance();
         IMMDModel model = null;
         float bodyYaw = entityIn.bodyYaw;
         float bodyPitch = 0.0f;
@@ -162,7 +163,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 PTS_modelViewStack.push();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
-                if(MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE)
+                if(MCinstance.interactionManager.getCurrentGameMode() != GameMode.CREATIVE)
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
                     Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0f);
                     Quaternion quaternion1 = Vec3f.POSITIVE_X.getDegreesQuaternion(-entityIn.getPitch());

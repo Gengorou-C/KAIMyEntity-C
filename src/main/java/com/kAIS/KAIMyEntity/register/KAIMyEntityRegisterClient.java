@@ -37,7 +37,7 @@ public class KAIMyEntityRegisterClient {
     static KeyBinding[] customKeyBindings = new KeyBinding[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4};
 
     public static void Register() {
-
+        MinecraftClient MCinstance = MinecraftClient.getInstance();
         for (KeyBinding i : keyBindings)
             KeyBindingHelper.registerKeyBinding(i);
         for (int i = 0; i < customKeyBindings.length; i++) {
@@ -67,13 +67,13 @@ public class KAIMyEntityRegisterClient {
             while (keyChangeProgram.wasPressed()) {
                 KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
                 if(KAIMyEntityClient.usingMMDShader == 0)
-                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("Default shader"));
+                    MCinstance.inGameHud.getChatHud().addMessage(Text.of("Default shader"));
                 if(KAIMyEntityClient.usingMMDShader == 1)
-                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("MMDShader"));
+                    MCinstance.inGameHud.getChatHud().addMessage(Text.of("MMDShader"));
             }
         });
 
-        File[] modelDirs = new File(MinecraftClient.getInstance().runDirectory, "KAIMyEntity").listFiles();
+        File[] modelDirs = new File(MCinstance.runDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
             for (File i : modelDirs) {
                 if (!i.getName().startsWith("EntityPlayer") && !i.getName().equals("DefaultAnim") && !i.getName().equals("Shader")) {
@@ -97,14 +97,16 @@ public class KAIMyEntityRegisterClient {
     }
 
     public static void onKeyResetPhysicsDown() {
-        ClientPlayerEntity localPlayer = MinecraftClient.getInstance().player;
+        MinecraftClient MCinstance = MinecraftClient.getInstance();
+        ClientPlayerEntity localPlayer = MCinstance.player;
         KAIMyEntityNetworkPack.sendToServer(2, localPlayer.getUuid(), 0);
-        KAIMyEntityRendererPlayerHelper.ResetPhysics(MinecraftClient.getInstance().player);
+        KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
     }
 
     public static void onCustomKeyDown(Integer numOfKey) {
-        ClientPlayerEntity localPlayer = MinecraftClient.getInstance().player;
+        MinecraftClient MCinstance = MinecraftClient.getInstance();
+        ClientPlayerEntity localPlayer = MCinstance.player;
         KAIMyEntityNetworkPack.sendToServer(1, localPlayer.getUuid(), numOfKey);
-        KAIMyEntityRendererPlayerHelper.CustomAnim(MinecraftClient.getInstance().player, numOfKey.toString());
+        KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, numOfKey.toString());
     }
 }
