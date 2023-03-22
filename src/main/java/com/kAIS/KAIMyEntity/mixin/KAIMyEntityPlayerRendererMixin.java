@@ -41,6 +41,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
 
     @Inject(method = {"render"}, at = @At("HEAD"), cancellable = true)
     public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int packedLightIn, CallbackInfo ci) {
+        MinecraftClient MCinstance = MinecraftClient.getInstance();
         IMMDModel model = null;
         float bodyYaw = entityIn.bodyYaw;
         float bodyPitch = 0.0f;
@@ -161,14 +162,14 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 PTS_modelViewStack.push();
                 int PosX_in_inventory;
                 int PosY_in_inventory;
-                if(MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE){
-                    PosX_in_inventory = ((InventoryScreen) MinecraftClient.getInstance().currentScreen).getRecipeBookWidget().findLeftEdge(MinecraftClient.getInstance().currentScreen.width, 176);
-                    PosY_in_inventory = (MinecraftClient.getInstance().currentScreen.height - 166) / 2;
+                if(MCinstance.interactionManager.getCurrentGameMode() != GameMode.CREATIVE){
+                    PosX_in_inventory = ((InventoryScreen) MCinstance.currentScreen).getRecipeBookWidget().findLeftEdge(MCinstance.currentScreen.width, 176);
+                    PosY_in_inventory = (MCinstance.currentScreen.height - 166) / 2;
                     PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
                 }else{
-                    PosX_in_inventory = (MinecraftClient.getInstance().currentScreen.width - 121) / 2;
-                    PosY_in_inventory = (MinecraftClient.getInstance().currentScreen.height - 195) / 2;
+                    PosX_in_inventory = (MCinstance.currentScreen.width - 121) / 2;
+                    PosY_in_inventory = (MCinstance.currentScreen.height - 195) / 2;
                     PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                 }
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);

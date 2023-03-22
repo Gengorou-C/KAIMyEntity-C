@@ -245,7 +245,7 @@ public class MMDModelOpenGL implements IMMDModel {
     }
 
     void RenderModel(Entity entityIn, float entityYaw, float entityPitch, Vector3f entityTrans, MatrixStack deliverStack) {
-        MinecraftClient minecraft = MinecraftClient.getInstance();
+        MinecraftClient MCinstance = MinecraftClient.getInstance();
         light0Direction = new Vector3f(1.0f, 0.75f, 0.0f);
         light1Direction = new Vector3f(-1.0f, 0.75f, 0.0f);
         light0Direction.normalize();
@@ -310,9 +310,9 @@ public class MMDModelOpenGL implements IMMDModel {
         }
 
         //UV2
-        minecraft.world.calculateAmbientDarkness();
+        MCinstance.world.calculateAmbientDarkness();
         int blockBrightness = 16 * entityIn.world.getLightLevel(LightType.BLOCK, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())));
-        int skyBrightness = Math.round((15.0f-minecraft.world.getAmbientDarkness()) * (entityIn.world.getLightLevel(LightType.SKY, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
+        int skyBrightness = Math.round((15.0f-MCinstance.world.getAmbientDarkness()) * (entityIn.world.getLightLevel(LightType.SKY, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
         uv2Buffer.clear();
         for(int i = 0; i < vertexCount; i++){
             uv2Buffer.putInt(blockBrightness);
@@ -480,7 +480,7 @@ public class MMDModelOpenGL implements IMMDModel {
                 RenderSystem.enableCull();
             }
             if (mats[materialID].tex == 0)
-                MinecraftClient.getInstance().getEntityRenderDispatcher().textureManager.bindTexture(TextureManager.MISSING_IDENTIFIER);
+                MCinstance.getEntityRenderDispatcher().textureManager.bindTexture(TextureManager.MISSING_IDENTIFIER);
             else
                 GL46C.glBindTexture(GL46C.GL_TEXTURE_2D, mats[materialID].tex);
             long startPos = (long) nf.GetSubMeshBeginIndex(model, i) * indexElementSize;
