@@ -74,6 +74,23 @@ public class MMDModelManager {
 
     }
 
+    public static Model GetModel(String modelName, String uuid) {
+        Model model = models.get(modelName + uuid);
+        if (model == null) {
+            IMMDModel m = LoadModel(modelName, 3);
+            if (m == null)
+                return null;
+            MMDAnimManager.AddModel(m);
+            AddModel(modelName + uuid, m, modelName);
+            model = models.get(modelName + uuid);
+        }
+        return model;
+    }
+
+    public static Model GetModel(String modelName){
+        return GetModel(modelName, "");
+    }
+
     public static void AddModel(String Name, IMMDModel model, String modelName, boolean isPlayer) {
         if (isPlayer) {
             NativeFunc nf = NativeFunc.GetInst();
@@ -104,6 +121,25 @@ public class MMDModelManager {
         }
     }
 
+    public static void AddModel(String Name, IMMDModel model, String modelName) {
+        NativeFunc nf = NativeFunc.GetInst();
+        EntityData ed = new EntityData();
+        ed.stateLayers = new EntityData.EntityState[3];
+        ed.playCustomAnim = false;
+        ed.rightHandMat = nf.CreateMat();
+        ed.leftHandMat = nf.CreateMat();
+        ed.matBuffer = ByteBuffer.allocateDirect(64); //float * 16
+
+        ModelWithEntityData m = new ModelWithEntityData();
+        m.entityName = Name;
+        m.model = model;
+        m.modelName = modelName;
+        m.entityData = ed;
+        model.ResetPhysics();
+        model.ChangeAnim(MMDAnimManager.GetAnimModel(model, "idle"), 0);
+        models.put(Name, m);
+    }
+
     public static void ReloadModel() {
         for (Model i : models.values())
             DeleteModel(i);
@@ -117,7 +153,7 @@ public class MMDModelManager {
         MMDAnimManager.DeleteModel(model.model);
     }
 
-    enum EntityState {Idle, Walk, Swim, Ridden, Driven, Sleep}
+    enum EntityState {Idle, Walk, Swim, Ridden, Driven, Sleep, Die}
 
     static class ModelWithEntityState extends Model {
         EntityState state;
@@ -128,10 +164,10 @@ public class MMDModelManager {
         String entityName;
         String modelName;
         public Properties properties = new Properties();
-        boolean loadedProperties = false;
+        boolean isPropertiesLoaded = false;
 
         public void loadModelProperties(boolean forceReload){
-            if (loadedProperties && !forceReload)
+            if (isPropertiesLoaded && !forceReload)
                 return;
             String path2Properties = gameDirectory + "/KAIMyEntity/" + modelName + "/model.properties";
             try {
@@ -140,7 +176,8 @@ public class MMDModelManager {
             } catch (IOException e) {
                 KAIMyEntityClient.logger.warn( "KAIMyEntity/" + modelName + "/model.properties not found" );
             }
-            loadedProperties = true;
+            isPropertiesLoaded = true;
+            KAIMyEntityClient.reloadProperties = false;
         } 
     }
 
@@ -175,5 +212,40 @@ public class MMDModelManager {
         ByteBuffer matBuffer;
 
         public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, OnClimbableUp, OnClimbableDown, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse, Crawl,LieDown}
+    }
+
+    public static class ModelWithEntityData extends Model {
+        public EntityData entityData;
+    }
+
+    public static class EntityData {
+        public static HashMap<EntityState, String> stateProperty = new HashMap<>() {{
+            put(EntityState.Idle, "idle");
+            put(EntityState.Walk, "walk");
+            put(EntityState.Sprint, "sprint");
+            put(EntityState.Air, "air");
+            put(EntityState.OnClimbable, "onClimbable");
+            put(EntityState.OnClimbableUp, "onClimbableUp");
+            put(EntityState.OnClimbableDown, "onClimbableDown");
+            put(EntityState.Swim, "swim");
+            put(EntityState.Ride, "ride");
+            put(EntityState.Ridden, "ridden");
+            put(EntityState.Driven, "driven");
+            put(EntityState.Sleep, "sleep");
+            put(EntityState.ElytraFly, "elytraFly");
+            put(EntityState.Die, "die");
+            put(EntityState.SwingRight, "swingRight");
+            put(EntityState.SwingLeft, "swingLeft");
+            put(EntityState.Sneak, "sneak");
+            put(EntityState.OnHorse, "onHorse");
+            put(EntityState.Crawl, "crawl");
+            put(EntityState.LieDown, "lieDown");
+        }};
+        public boolean playCustomAnim; //Custom animation played in layer 0.
+        public long rightHandMat, leftHandMat;
+        public EntityState[] stateLayers;
+        ByteBuffer matBuffer;
+
+        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, OnClimbableUp, OnClimbableDown, Swim, Ride, Ridden, Driven, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse, Crawl, LieDown}
     }
 }
