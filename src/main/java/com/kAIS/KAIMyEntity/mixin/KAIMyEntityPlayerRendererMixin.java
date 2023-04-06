@@ -48,14 +48,16 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         float bodyPitch = 0.0f;
         Vec3f entityTrans = new Vec3f(0.0f, 0.0f, 0.0f);
         MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + entityIn.getName().getString());
-        if (m == null)
+        if (m == null){
             m = MMDModelManager.GetPlayerModel("EntityPlayer");
+        }        
         if (m == null){
             super.render(entityIn, entityYaw, partialTicks, matrixStackIn, vertexConsumers, packedLightIn);
             return;
         } 
-        if (m != null)
+        if (m != null){
             model = m.model;
+        }
 
         MMDModelManager.ModelWithPlayerData mwpd = (MMDModelManager.ModelWithPlayerData) m;
         mwpd.loadModelProperties(KAIMyEntityClient.reloadProperties);
@@ -67,6 +69,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         Vec3f swimmingTrans = mwpd.properties.getProperty("swimmingTrans") == null ? new Vec3f(0.0f, 0.0f, 0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("swimmingTrans"));
         float crawlingPitch = mwpd.properties.getProperty("crawlingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("crawlingPitch"));
         Vec3f crawlingTrans = mwpd.properties.getProperty("crawlingTrans") == null ? new Vec3f(0.0f, 0.0f, 0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("crawlingTrans"));
+        float[] size = sizeOfModel(mwpd);
 
         if (model != null) {
             if (!mwpd.playerData.playCustomAnim) {
@@ -153,9 +156,6 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            float[] size = sizeOfModel(mwpd);
-            if(KAIMyEntityClient.reloadProperties)
-                KAIMyEntityClient.reloadProperties = false;
             if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 MatrixStack PTS_modelViewStack = RenderSystem.getModelViewStack();
