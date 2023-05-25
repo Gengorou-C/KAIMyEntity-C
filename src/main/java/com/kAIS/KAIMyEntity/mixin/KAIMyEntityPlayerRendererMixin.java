@@ -164,12 +164,12 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 if(MCinstance.interactionManager.getCurrentGameMode() != GameMode.CREATIVE){
                     PosX_in_inventory = ((InventoryScreen) MCinstance.currentScreen).getRecipeBookWidget().findLeftEdge(MCinstance.currentScreen.width, 176);
                     PosY_in_inventory = (MCinstance.currentScreen.height - 166) / 2;
-                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, 50);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
                 }else{
                     PosX_in_inventory = (MCinstance.currentScreen.width - 121) / 2;
                     PosY_in_inventory = (MCinstance.currentScreen.height - 195) / 2;
-                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, 50.0);
                 }
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);
@@ -200,7 +200,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.MAIN_HAND, "x");
             matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             matrixStackIn.scale(10.0f, 10.0f, 10.0f);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getMainHandStack(), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getMainHandStack(), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, vertexConsumers, entityIn.getWorld(), packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
 
             nf.GetLeftHandMat(model.GetModelLong(), mwpd.playerData.leftHandMat);
@@ -211,7 +211,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.OFF_HAND, "x");
             matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             matrixStackIn.scale(10.0f, 10.0f, 10.0f);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.getWorld(), packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
         }
         

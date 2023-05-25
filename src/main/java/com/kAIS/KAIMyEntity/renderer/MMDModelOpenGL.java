@@ -311,8 +311,8 @@ public class MMDModelOpenGL implements IMMDModel {
 
         //UV2
         MCinstance.world.calculateAmbientDarkness();
-        int blockBrightness = 16 * entityIn.world.getLightLevel(LightType.BLOCK, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())));
-        int skyBrightness = Math.round((15.0f-MCinstance.world.getAmbientDarkness()) * (entityIn.world.getLightLevel(LightType.SKY, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
+        int blockBrightness = 16 * entityIn.getWorld().getLightLevel(LightType.BLOCK, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())));
+        int skyBrightness = Math.round((15.0f-MCinstance.world.getAmbientDarkness()) * (entityIn.getWorld().getLightLevel(LightType.SKY, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
         uv2Buffer.clear();
         for(int i = 0; i < vertexCount; i++){
             uv2Buffer.putInt(blockBrightness);

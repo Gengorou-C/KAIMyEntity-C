@@ -147,12 +147,12 @@ public class KAIMyEntityClient implements ClientModInitializer {
     }
     
     public static void drawText(String arg, int x, int y){
-        MinecraftClient instance = MinecraftClient.getInstance();
+        MinecraftClient MCinstance = MinecraftClient.getInstance();
         MatrixStack mat;
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         mat = RenderSystem.getModelViewStack();
         mat.push();
-        instance.textRenderer.draw(mat, arg, x, y, -1);
+        //instance.textRenderer.draw(mat, arg, x, y, -1);
         mat.pop();
     }
 }
