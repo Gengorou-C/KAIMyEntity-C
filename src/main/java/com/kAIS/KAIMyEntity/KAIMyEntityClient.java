@@ -34,7 +34,6 @@ public class KAIMyEntityClient implements ClientModInitializer {
     static final int BUFFER = 512;
     static final long TOOBIG = 0x6400000; // Max size of unzipped data, 100MB
     static final int TOOMANY = 1024;      // Max number of files
-    //public static String[] debugStr = new String[10];
 
     @Override
     public void onInitializeClient() {

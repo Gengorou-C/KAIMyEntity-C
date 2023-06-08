@@ -214,10 +214,6 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
         }
-        
-        //for(int i=0; i<10; i++){
-        //    KAIMyEntityClient.drawText(i+":"+KAIMyEntityClient.debugStr[i], 0, i*15);
-        //}
         ci.cancel();//Added By FMyuchuan. | 隐藏模型脚下的史蒂夫
     }
 
