@@ -5,7 +5,7 @@ import com.kAIS.KAIMyEntity.NativeFunc;
 import com.kAIS.KAIMyEntity.renderer.IMMDModel;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-import com.kAIS.KAIMyEntity.renderer.MMDModelManager.ModelWithPlayerData;
+import com.kAIS.KAIMyEntity.renderer.MMDModelManager.ModelWithEntityData;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
@@ -46,9 +46,9 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         float bodyYaw = entityIn.bodyYaw;
         float bodyPitch = 0.0f;
         Vector3f entityTrans = new Vector3f(0.0f);
-        MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + entityIn.getName().getString());
+        MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + entityIn.getName().getString());
         if (m == null){
-            m = MMDModelManager.GetPlayerModel("EntityPlayer");
+            m = MMDModelManager.GetModel("EntityPlayer");
         }
         if (m == null){
             super.render(entityIn, entityYaw, partialTicks, matrixStackIn, vertexConsumers, packedLightIn);
@@ -57,99 +57,99 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         if (m != null){
             model = m.model;
         }
-        MMDModelManager.ModelWithPlayerData mwpd = (MMDModelManager.ModelWithPlayerData) m;
-        mwpd.loadModelProperties(KAIMyEntityClient.reloadProperties);
-        float sleepingPitch = mwpd.properties.getProperty("sleepingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("sleepingPitch"));
-        Vector3f sleepingTrans = mwpd.properties.getProperty("sleepingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("sleepingTrans"));
-        float flyingPitch = mwpd.properties.getProperty("flyingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("flyingPitch"));
-        Vector3f flyingTrans = mwpd.properties.getProperty("flyingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("flyingTrans"));
-        float swimmingPitch = mwpd.properties.getProperty("swimmingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("swimmingPitch"));
-        Vector3f swimmingTrans = mwpd.properties.getProperty("swimmingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("swimmingTrans"));
-        float crawlingPitch = mwpd.properties.getProperty("crawlingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("crawlingPitch"));
-        Vector3f crawlingTrans = mwpd.properties.getProperty("crawlingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("crawlingTrans"));
-        float[] size = sizeOfModel(mwpd);
+        MMDModelManager.ModelWithEntityData mwed = (MMDModelManager.ModelWithEntityData) m;
+        mwed.loadModelProperties(KAIMyEntityClient.reloadProperties);
+        float sleepingPitch = mwed.properties.getProperty("sleepingPitch") == null ? 0.0f : Float.valueOf(mwed.properties.getProperty("sleepingPitch"));
+        Vector3f sleepingTrans = mwed.properties.getProperty("sleepingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwed.properties.getProperty("sleepingTrans"));
+        float flyingPitch = mwed.properties.getProperty("flyingPitch") == null ? 0.0f : Float.valueOf(mwed.properties.getProperty("flyingPitch"));
+        Vector3f flyingTrans = mwed.properties.getProperty("flyingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwed.properties.getProperty("flyingTrans"));
+        float swimmingPitch = mwed.properties.getProperty("swimmingPitch") == null ? 0.0f : Float.valueOf(mwed.properties.getProperty("swimmingPitch"));
+        Vector3f swimmingTrans = mwed.properties.getProperty("swimmingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwed.properties.getProperty("swimmingTrans"));
+        float crawlingPitch = mwed.properties.getProperty("crawlingPitch") == null ? 0.0f : Float.valueOf(mwed.properties.getProperty("crawlingPitch"));
+        Vector3f crawlingTrans = mwed.properties.getProperty("crawlingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwed.properties.getProperty("crawlingTrans"));
+        float[] size = sizeOfModel(mwed);
 
         if (model != null) {
-            if (!mwpd.playerData.playCustomAnim) {
+            if (!mwed.entityData.playCustomAnim) {
                 //Layer 0
                 if (entityIn.getHealth() == 0.0f) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Die, 0);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Die, 0);
                 } else if (entityIn.isFallFlying()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.ElytraFly, 0);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.ElytraFly, 0);
                     bodyPitch = entityIn.getPitch() + flyingPitch;
                     entityTrans = flyingTrans;
                 } else if (entityIn.isSleeping()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Sleep, 0);
                     bodyYaw = entityIn.getSleepingDirection().asRotation() + 180.0f;
                     bodyPitch = sleepingPitch;
                     entityTrans = sleepingTrans;
                 } else if (entityIn.hasVehicle()) {
                     if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f)){
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnHorse, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.OnHorse, 0);
                         bodyYaw = entityIn.getVehicle().getYaw();
                     }else if(entityIn.getVehicle().getType() == EntityType.HORSE){
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Ride, 0);
                         bodyYaw = entityIn.getVehicle().getYaw();
                     }else{
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Ride, 0);
                     }
                 } else if (entityIn.isSwimming()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Swim, 0);
                     bodyPitch = entityIn.getPitch() + swimmingPitch;
                     entityTrans = swimmingTrans;
                 } else if (entityIn.isClimbing()) {
                     if(entityIn.getY() - entityIn.prevY > 0){
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbableUp, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.OnClimbableUp, 0);
                     }else if(entityIn.getY() - entityIn.prevY < 0){
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbableDown, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.OnClimbableDown, 0);
                     }else{
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbable, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.OnClimbable, 0);
                     }
                 } else if (entityIn.isSprinting() && !entityIn.isSneaking()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sprint, 0);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Sprint, 0);
                 } else if (entityIn.isCrawling()){
                     if(entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f){
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Crawl, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Crawl, 0);
                     }else {
-                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.LieDown, 0);
+                        AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.LieDown, 0);
                     }
                     bodyPitch = crawlingPitch;
                     entityTrans = crawlingTrans;
                 } else if (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Walk, 0);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Walk, 0);
                 } else {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Idle, 0);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Idle, 0);
                 }
 
                 //Layer 1
                 if(!entityIn.isUsingItem() && !entityIn.handSwinging || entityIn.isSleeping()){
-                    if (mwpd.playerData.stateLayers[1] != MMDModelManager.PlayerData.EntityState.Idle) {
-                        mwpd.playerData.stateLayers[1] = MMDModelManager.PlayerData.EntityState.Idle;
+                    if (mwed.entityData.stateLayers[1] != MMDModelManager.EntityData.EntityState.Idle) {
+                        mwed.entityData.stateLayers[1] = MMDModelManager.EntityData.EntityState.Idle;
                         model.ChangeAnim(0, 1);
                     }
                 }else{
                     if((entityIn.getActiveHand() == Hand.MAIN_HAND) && entityIn.isUsingItem()){
                         String itemId = getItemId_in_ActiveHand(entityIn, Hand.MAIN_HAND);
-                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemRight, itemId, "Right", "using", 1);
+                        CustomItemActiveAnim(mwed, MMDModelManager.EntityData.EntityState.ItemRight, itemId, "Right", "using", 1);
                     }else if((entityIn.preferredHand == Hand.MAIN_HAND) && entityIn.handSwinging){
                         String itemId = getItemId_in_ActiveHand(entityIn, Hand.MAIN_HAND);
-                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.SwingRight, itemId, "Right", "swinging", 1);
+                        CustomItemActiveAnim(mwed, MMDModelManager.EntityData.EntityState.SwingRight, itemId, "Right", "swinging", 1);
                     }else if((entityIn.getActiveHand() == Hand.OFF_HAND) && entityIn.isUsingItem()){
                         String itemId = getItemId_in_ActiveHand(entityIn, Hand.OFF_HAND);
-                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemLeft, itemId, "Left", "using", 1);
+                        CustomItemActiveAnim(mwed, MMDModelManager.EntityData.EntityState.ItemLeft, itemId, "Left", "using", 1);
                     }else if((entityIn.preferredHand == Hand.OFF_HAND) && entityIn.handSwinging){
                         String itemId = getItemId_in_ActiveHand(entityIn, Hand.OFF_HAND);
-                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.SwingLeft, itemId, "Left", "swinging", 1);
+                        CustomItemActiveAnim(mwed, MMDModelManager.EntityData.EntityState.SwingLeft, itemId, "Left", "swinging", 1);
                     }
                 }
 
 
                 //Layer 2
                 if (entityIn.isSneaking() && !entityIn.isCrawling()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sneak, 2);
+                    AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Sneak, 2);
                 } else {
-                    if (mwpd.playerData.stateLayers[2] != MMDModelManager.PlayerData.EntityState.Idle) {
-                        mwpd.playerData.stateLayers[2] = MMDModelManager.PlayerData.EntityState.Idle;
+                    if (mwed.entityData.stateLayers[2] != MMDModelManager.EntityData.EntityState.Idle) {
+                        mwed.entityData.stateLayers[2] = MMDModelManager.EntityData.EntityState.Idle;
                         model.ChangeAnim(0, 2);
                     }
                 }
@@ -192,23 +192,23 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             }
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;
-            nf.GetRightHandMat(model.GetModelLong(), mwpd.playerData.rightHandMat);
+            nf.GetRightHandMat(model.GetModelLong(), mwed.entityData.rightHandMat);
             matrixStackIn.push();
-            matrixStackIn.peek().getPositionMatrix().mul(DataToMat(nf, mwpd.playerData.rightHandMat));
-            rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.MAIN_HAND, "z");
+            matrixStackIn.peek().getPositionMatrix().mul(DataToMat(nf, mwed.entityData.rightHandMat));
+            rotationDegree = ItemRotaionDegree(entityIn, mwed, Hand.MAIN_HAND, "z");
             matrixStackIn.multiply(new Quaternionf().rotateZ(rotationDegree*((float)Math.PI / 180F)));
-            rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.MAIN_HAND, "x");
+            rotationDegree = ItemRotaionDegree(entityIn, mwed, Hand.MAIN_HAND, "x");
             matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             matrixStackIn.scale(10.0f, 10.0f, 10.0f);
             MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getMainHandStack(), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
             matrixStackIn.pop();
 
-            nf.GetLeftHandMat(model.GetModelLong(), mwpd.playerData.leftHandMat);
+            nf.GetLeftHandMat(model.GetModelLong(), mwed.entityData.leftHandMat);
             matrixStackIn.push();
-            matrixStackIn.peek().getPositionMatrix().mul(DataToMat(nf, mwpd.playerData.leftHandMat));
-            rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.OFF_HAND, "z");
+            matrixStackIn.peek().getPositionMatrix().mul(DataToMat(nf, mwed.entityData.leftHandMat));
+            rotationDegree = ItemRotaionDegree(entityIn, mwed, Hand.OFF_HAND, "z");
             matrixStackIn.multiply(new Quaternionf().rotateZ(rotationDegree*((float)Math.PI / 180F)));
-            rotationDegree = ItemRotaionDegree(entityIn, mwpd, Hand.OFF_HAND, "x");
+            rotationDegree = ItemRotaionDegree(entityIn, mwed, Hand.OFF_HAND, "x");
             matrixStackIn.multiply(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             matrixStackIn.scale(10.0f, 10.0f, 10.0f);
             MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
@@ -227,27 +227,27 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         return result;
     }
 
-    void AnimStateChangeOnce(MMDModelManager.ModelWithPlayerData model, MMDModelManager.PlayerData.EntityState targetState, Integer layer) {
-        String Property = MMDModelManager.PlayerData.stateProperty.get(targetState);
-        if (model.playerData.stateLayers[layer] != targetState) {
-            model.playerData.stateLayers[layer] = targetState;
+    void AnimStateChangeOnce(MMDModelManager.ModelWithEntityData model, MMDModelManager.EntityData.EntityState targetState, Integer layer) {
+        String Property = MMDModelManager.EntityData.stateProperty.get(targetState);
+        if (model.entityData.stateLayers[layer] != targetState) {
+            model.entityData.stateLayers[layer] = targetState;
             model.model.ChangeAnim(MMDAnimManager.GetAnimModel(model.model, Property), layer);
         }
     }
 
-    void CustomItemActiveAnim(MMDModelManager.ModelWithPlayerData model, MMDModelManager.PlayerData.EntityState targetState, String itemName, String activeHand, String handState, Integer layer) {
+    void CustomItemActiveAnim(MMDModelManager.ModelWithEntityData model, MMDModelManager.EntityData.EntityState targetState, String itemName, String activeHand, String handState, Integer layer) {
         long anim = MMDAnimManager.GetAnimModel(model.model, String.format("itemActive_%s_%s_%s", itemName, activeHand, handState));
         if (anim != 0) {
-            if (model.playerData.stateLayers[layer] != targetState) {
-                model.playerData.stateLayers[layer] = targetState;
+            if (model.entityData.stateLayers[layer] != targetState) {
+                model.entityData.stateLayers[layer] = targetState;
                 model.model.ChangeAnim(anim, layer);
             }
             return;
         }
-        if (targetState == MMDModelManager.PlayerData.EntityState.ItemRight || targetState == MMDModelManager.PlayerData.EntityState.SwingRight) {
-            AnimStateChangeOnce(model, MMDModelManager.PlayerData.EntityState.SwingRight, layer);
-        } else if (targetState == MMDModelManager.PlayerData.EntityState.ItemLeft || targetState == MMDModelManager.PlayerData.EntityState.SwingLeft) {
-            AnimStateChangeOnce(model, MMDModelManager.PlayerData.EntityState.SwingLeft, layer);
+        if (targetState == MMDModelManager.EntityData.EntityState.ItemRight || targetState == MMDModelManager.EntityData.EntityState.SwingRight) {
+            AnimStateChangeOnce(model, MMDModelManager.EntityData.EntityState.SwingRight, layer);
+        } else if (targetState == MMDModelManager.EntityData.EntityState.ItemLeft || targetState == MMDModelManager.EntityData.EntityState.SwingLeft) {
+            AnimStateChangeOnce(model, MMDModelManager.EntityData.EntityState.SwingLeft, layer);
         }
     }
     
@@ -272,7 +272,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         return result;
     }
 
-    float ItemRotaionDegree(AbstractClientPlayerEntity entityIn, ModelWithPlayerData mwpd, Hand iHand, String axis){
+    float ItemRotaionDegree(AbstractClientPlayerEntity entityIn, ModelWithEntityData mwed, Hand iHand, String axis){
         float result = 0.0f;
         String itemId;
         String strHand;
@@ -294,19 +294,19 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             handState = "idle";
         }
 
-        if (mwpd.properties.getProperty(itemId + "_" + strHand + "_" + handState + "_" + axis) != null ){
-            result = Float.valueOf(mwpd.properties.getProperty(itemId + "_" + strHand + "_" + handState + "_" + axis));
-        } else if (mwpd.properties.getProperty("default_" + axis) != null){
-            result = Float.valueOf(mwpd.properties.getProperty("default_" + axis));
+        if (mwed.properties.getProperty(itemId + "_" + strHand + "_" + handState + "_" + axis) != null ){
+            result = Float.valueOf(mwed.properties.getProperty(itemId + "_" + strHand + "_" + handState + "_" + axis));
+        } else if (mwed.properties.getProperty("default_" + axis) != null){
+            result = Float.valueOf(mwed.properties.getProperty("default_" + axis));
         }
         
         return result;
     }
 
-    float[] sizeOfModel(ModelWithPlayerData mwpd){
+    float[] sizeOfModel(ModelWithEntityData mwed){
         float[] size = new float[2];
-        size[0] = (mwpd.properties.getProperty("size") == null) ? 1.0f : Float.valueOf(mwpd.properties.getProperty("size"));
-        size[1] = (mwpd.properties.getProperty("size_in_inventory") == null) ? 1.0f : Float.valueOf(mwpd.properties.getProperty("size_in_inventory"));
+        size[0] = (mwed.properties.getProperty("size") == null) ? 1.0f : Float.valueOf(mwed.properties.getProperty("size"));
+        size[1] = (mwed.properties.getProperty("size_in_inventory") == null) ? 1.0f : Float.valueOf(mwed.properties.getProperty("size_in_inventory"));
         return size;
     }
 }
