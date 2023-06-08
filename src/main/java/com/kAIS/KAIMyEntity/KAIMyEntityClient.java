@@ -4,12 +4,9 @@ import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -143,15 +140,5 @@ public class KAIMyEntityClient implements ClientModInitializer {
         vector3f.y = Float.valueOf(splittedStr[1]);
         vector3f.z = Float.valueOf(splittedStr[2]);
         return vector3f;
-    }
-    
-    public static void drawText(String arg, int x, int y){
-        MinecraftClient instance = MinecraftClient.getInstance();
-        MatrixStack mat;
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        mat = RenderSystem.getModelViewStack();
-        mat.push();
-        instance.textRenderer.draw(mat, arg, x, y, -1);
-        mat.pop();
     }
 }

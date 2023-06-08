@@ -89,7 +89,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             int PosY_in_inventory;
             PosX_in_inventory = (MCinstance.currentScreen.width - 176) / 2;
             PosY_in_inventory = (MCinstance.currentScreen.height - 166) / 2;
-            PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+60, -950.0);
+            PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+60, 50.0);
             PTS_modelViewStack.push();
             PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);
             PTS_modelViewStack.scale(size[1], size[1], size[1]);
