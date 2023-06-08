@@ -8,12 +8,12 @@ public class KAIMyEntityRendererPlayerHelper {
     }
 
     public static void ResetPhysics(PlayerEntity player) {
-        MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + player.getName().getString());
+        MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + player.getName().getString());
         if (m == null)
-            m = MMDModelManager.GetPlayerModel("EntityPlayer");
+            m = MMDModelManager.GetModel("EntityPlayer");
         if (m != null) {
             IMMDModel model = m.model;
-            ((MMDModelManager.ModelWithPlayerData) m).playerData.playCustomAnim = false;
+            ((MMDModelManager.ModelWithEntityData) m).entityData.playCustomAnim = false;
             model.ChangeAnim(MMDAnimManager.GetAnimModel(model, "idle"), 0);
             model.ChangeAnim(0, 1);
             model.ChangeAnim(0, 2);
@@ -22,13 +22,13 @@ public class KAIMyEntityRendererPlayerHelper {
     }
 
     public static void CustomAnim(PlayerEntity player, String id) {
-        MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + player.getName().getString());
+        MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + player.getName().getString());
         if (m == null)
-            m = MMDModelManager.GetPlayerModel("EntityPlayer");
+            m = MMDModelManager.GetModel("EntityPlayer");
         if (m != null) {
-            MMDModelManager.ModelWithPlayerData mwpd = (MMDModelManager.ModelWithPlayerData) m;
+            MMDModelManager.ModelWithEntityData mwed = (MMDModelManager.ModelWithEntityData) m;
             IMMDModel model = m.model;
-            mwpd.playerData.playCustomAnim = true;
+            mwed.entityData.playCustomAnim = true;
             model.ChangeAnim(MMDAnimManager.GetAnimModel(model, "custom_" + id), 0);
             model.ChangeAnim(0, 1);
             model.ChangeAnim(0, 2);
