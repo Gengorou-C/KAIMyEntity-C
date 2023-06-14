@@ -551,9 +551,6 @@ public class MMDModelOpenGL implements IMMDModel {
         if(shader.projectionMat != null)
             shader.projectionMat.set(RenderSystem.getProjectionMatrix());
 
-        if(shader.viewRotationMat != null)
-            shader.viewRotationMat.method_39978(RenderSystem.getInverseViewRotationMatrix());
-
         if(shader.colorModulator != null)
             shader.colorModulator.set(RenderSystem.getShaderColor());
 
@@ -571,9 +568,6 @@ public class MMDModelOpenGL implements IMMDModel {
 
         if(shader.fogColor != null)
             shader.fogColor.set(RenderSystem.getShaderFogColor());
-
-        if(shader.fogShape != null)
-            shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
 
         if (shader.textureMat != null) 
             shader.textureMat.set(RenderSystem.getTextureMatrix());
