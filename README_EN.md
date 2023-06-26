@@ -2,7 +2,6 @@
 
 KAIMyEntity allows you to render 3D models of MikuMikuDance instead of default entities.  
   
-----
 I'm not professional programer.  
 I can't support and guarantee that this mod work without any bugs.
 
@@ -29,16 +28,16 @@ I can't support and guarantee that this mod work without any bugs.
 
 ### Installation
 
-(1)Download appropriate jar file, and put it in mods folder.  
-(2)Run minecraft.  
-(3)If KAIMyEntity folder does't exist in Game directory, this mod will download a ZIP file and extract it.  
-(4)If KAIMyEntitySaba.dll does't exist in Game directory, it will be downloaded.  
-(5)Open KAIMyEntity folder, and copy and paste EntityPlayer folder.  
-(6)Rename the copied EntityPlayer folder "EntityPlayer_(YourName)".  
-(e.g.) "EntityPlayer_Gengorou-C"  
-(7)Put 3D model files in EntityPlayer_(YourName) folder.  
-(8)Rename the 3D model file "model.pmx" (or "model.pmd").  
-(9)Select world, and start the game.
+(1) Download appropriate jar file, and put it in mods folder.  
+(2) Run minecraft.  
+(3) If KAIMyEntity folder does't exist in Game directory, this mod will download a ZIP file and extract it.  
+(4) If KAIMyEntitySaba.dll does't exist in Game directory, it will be downloaded.  
+(5) Open KAIMyEntity folder, and copy and paste EntityPlayer folder.  
+(6) Rename the copied EntityPlayer folder "EntityPlayer_(YourName)".  
+ (e.g.) "EntityPlayer_Gengorou-C"  
+(7) Put 3D model files in EntityPlayer_(YourName) folder.  
+(8) Rename the 3D model file "model.pmx" (or "model.pmd").  
+(9) Select world, and start the game.
 
 ### Exmaple of directory tree
 
@@ -77,9 +76,9 @@ I can't support and guarantee that this mod work without any bugs.
 └── ...
 ```
 
-### Motion list
+## Motion list
 
-#### Player
+### Player
 
 * idle.vmd
 * walk.vmd
@@ -103,7 +102,7 @@ I can't support and guarantee that this mod work without any bugs.
 * crawl.vmd
 * lieDown.vmd
 
-#### entity
+### entity
 
 * idle.vmd
 * walk.vmd
