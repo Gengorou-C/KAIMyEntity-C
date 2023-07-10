@@ -1,5 +1,7 @@
 # KAIMyEntity-C
 
+[English](https://github.com/Gengorou-C/KAIMyEntity-C/blob/develop-C/README_EN.md)
+
 ## 1.初めに
 
 私はプロのプログラマーではありません。  
