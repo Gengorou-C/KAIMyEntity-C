@@ -147,7 +147,7 @@ public class KAIMyEntityClient implements ClientModInitializer {
     }
     
     public static void drawText(String arg, int x, int y){
-        MinecraftClient MCinstance = MinecraftClient.getInstance();
+        //MinecraftClient MCinstance = MinecraftClient.getInstance();
         MatrixStack mat;
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         mat = RenderSystem.getModelViewStack();

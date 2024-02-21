@@ -28,13 +28,13 @@ public class KAIMyEntityNetworkPack {
     public static void DoInClient(int opCode, UUID playerUUID, int arg0) {
         MinecraftClient MCinstance = MinecraftClient.getInstance();
         //Ignore message when player is self.
-        assert MinecraftClient.getInstance().player != null;
+        assert MCinstance.player != null;
         if (playerUUID.equals(MCinstance.player.getUuid()))
             return;
         switch (opCode) {
             case 1: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert MinecraftClient.getInstance().world != null;
+                assert MCinstance.world != null;
                 PlayerEntity target = MCinstance.world.getPlayerByUuid(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.CustomAnim(target, Integer.toString(arg0));
@@ -42,7 +42,7 @@ public class KAIMyEntityNetworkPack {
             }
             case 2: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert MinecraftClient.getInstance().world != null;
+                assert MCinstance.world != null;
                 PlayerEntity target = MCinstance.world.getPlayerByUuid(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.ResetPhysics(target);
