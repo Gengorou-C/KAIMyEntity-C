@@ -2,11 +2,10 @@ package com.kAIS.KAIMyEntity.renderer;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
-import org.lwjgl.opengl.GL46C;
-
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import org.lwjgl.opengl.GL46C;
 
 public class MMDTextureManager {
     static NativeFunc nf;

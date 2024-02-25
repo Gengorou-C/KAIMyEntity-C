@@ -1,10 +1,10 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.entity.Entity;
 
-public class KAIMyEntityRenderFactory<T extends Entity> implements EntityRendererFactory<T> {
+public class KAIMyEntityRenderFactory<T extends Entity> implements EntityRendererProvider<T> {
     String entityName;
 
     public KAIMyEntityRenderFactory(String entityName) {

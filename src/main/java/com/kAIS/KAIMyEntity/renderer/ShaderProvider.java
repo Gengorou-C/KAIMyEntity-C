@@ -1,16 +1,15 @@
 package com.kAIS.KAIMyEntity.renderer;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
-import net.minecraft.client.MinecraftClient;
-import org.lwjgl.opengl.GL46C;
-
 import java.io.FileInputStream;
+import net.minecraft.client.Minecraft;
+import org.lwjgl.opengl.GL46C;
 
 public class ShaderProvider {
     private static boolean isInited = false;
     private static int program = 0;
-    private static final String vertexPath = MinecraftClient.getInstance().runDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.vsh";
-    private static final String fragPath = MinecraftClient.getInstance().runDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.fsh";
+    private static final String vertexPath = Minecraft.getInstance().gameDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.vsh";
+    private static final String fragPath = Minecraft.getInstance().gameDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.fsh";
 
     public static void Init() {
         if (!isInited) {
