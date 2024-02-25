@@ -1,14 +1,14 @@
-package com.kAIS.KAIMyEntity.forge;
+package com.kAIS.KAIMyEntity.neoforge;
 
 import com.kAIS.KAIMyEntity.KAIMyEntity;
-import com.kAIS.KAIMyEntity.forge.register.KAIMyEntityRegisterClient;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import com.kAIS.KAIMyEntity.neoforge.register.KAIMyEntityRegisterClient;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = KAIMyEntity.MOD_ID)
-public class KAIMyEntityForgeClient {
+public class KAIMyEntityNeoForgeClient {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         KAIMyEntity.logger.info("KAIMyEntity InitClient begin...");

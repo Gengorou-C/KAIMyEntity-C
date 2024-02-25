@@ -1,20 +1,19 @@
-package com.kAIS.KAIMyEntity.forge;
+package com.kAIS.KAIMyEntity.neoforge;
 
 import com.kAIS.KAIMyEntity.KAIMyEntity;
-import com.kAIS.KAIMyEntity.forge.config.KAIMyEntityConfig;
-import com.kAIS.KAIMyEntity.forge.register.KAIMyEntityRegisterCommon;
+import com.kAIS.KAIMyEntity.neoforge.config.KAIMyEntityConfig;
+import com.kAIS.KAIMyEntity.neoforge.register.KAIMyEntityRegisterCommon;
 
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(KAIMyEntity.MOD_ID)
-public class KAIMyEntityForge {
+public class KAIMyEntityNeoForge {
     //public static String[] debugStr = new String[hogehoge];
-
-    public KAIMyEntityForge() {
+    public KAIMyEntityNeoForge() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, KAIMyEntityConfig.config);
     }
