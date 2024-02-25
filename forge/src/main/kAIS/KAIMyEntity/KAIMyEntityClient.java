@@ -1,10 +1,5 @@
 package com.kAIS.KAIMyEntity;
 
-import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
-import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -14,31 +9,39 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 
+import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
+import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
+import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
+import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
+
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = KAIMyEntity.MODID)
 public class KAIMyEntityClient {
-	public static final String MOD_ID = "kaimyentity";
-    public static final Logger logger = LogManager.getLogger();
+    public static final String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
     public static int usingMMDShader = 0;
     public static boolean reloadProperties = false;
-    static String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
     static final int BUFFER = 512;
     static final long TOOBIG = 0x6400000; // Max size of unzipped data, 100MB
-    static final int TOOMANY = 1024;      // Max number of files
-    //public static String[] debugStr = new String[10];
+    static final int TOOMANY = 1024; // Max number of files
 
-    public static void initClient() {
-        logger.info("KAIMyEntity InitClient begin...");
+    @SubscribeEvent
+    public static void clientSetup(FMLClientSetupEvent event) {
+        KAIMyEntity.logger.info("KAIMyEntity clientSetup begin...");
         checkKAIMyEntityFolder();
         MMDModelManager.Init();
         MMDTextureManager.Init();
         MMDAnimManager.Init();
-        logger.info("KAIMyEntity InitClient successful.");
+        KAIMyEntityRegisterClient.Register();
+        KAIMyEntity.logger.info("KAIMyEntity clientSetup successful.");
     }
 
     private static String validateFilename(String filename, String intendedDir) throws java.io.IOException {
@@ -63,19 +66,19 @@ public class KAIMyEntityClient {
         long total = 0;
         try {
             while ((entry = zis.getNextEntry()) != null) {
-                logger.info("Extracting: " + entry);
+                KAIMyEntity.logger.info("Extracting: " + entry);
                 int count;
                 byte data[] = new byte[BUFFER];
                 // Write the files to the disk, but ensure that the filename is valid,
                 // and that the file is not insanely big
-                String name = validateFilename(targetDir+entry.getName(), ".");
+                String name = validateFilename(targetDir + entry.getName(), ".");
                 File targetFile = new File(name);
                 if (entry.isDirectory()) {
-                    logger.info("Creating directory " + name);
+                    KAIMyEntity.logger.info("Creating directory " + name);
                     new File(name).mkdir();
                     continue;
                 }
-                if (!targetFile.getParentFile().exists()){
+                if (!targetFile.getParentFile().exists()) {
                     targetFile.getParentFile().mkdirs();
                 }
                 FileOutputStream fos = new FileOutputStream(name);
@@ -100,21 +103,21 @@ public class KAIMyEntityClient {
         }
     }
 
-    private static void checkKAIMyEntityFolder(){
+    private static void checkKAIMyEntityFolder() {
         File KAIMyEntityFolder = new File(gameDirectory + "/KAIMyEntity");
-        if (!KAIMyEntityFolder.exists()){
-            logger.info("KAIMyEntity folder not found, try download from github!");
+        if (!KAIMyEntityFolder.exists()) {
+            KAIMyEntity.logger.info("KAIMyEntity folder not found, try download from github!");
             KAIMyEntityFolder.mkdir();
-            try{
+            try {
                 FileUtils.copyURLToFile(new URL("https://github.com/Gengorou-C/KAIMyEntity-C/releases/download/requiredFiles/KAIMyEntity.zip"), new File(gameDirectory + "/KAIMyEntity.zip"), 30000, 30000);
-            }catch (IOException e){
-                logger.info("Download KAIMyEntity.zip failed!");
+            } catch (IOException e) {
+                KAIMyEntity.logger.info("Download KAIMyEntity.zip failed!");
             }
 
-            try{
+            try {
                 unzip(gameDirectory + "/KAIMyEntity.zip", gameDirectory + "/KAIMyEntity/");
-            }catch (IOException e){
-                logger.info("extract KAIMyEntity.zip failed!");
+            } catch (IOException e) {
+                KAIMyEntity.logger.info("extract KAIMyEntity.zip failed!");
             }
         }
         return;
@@ -138,15 +141,5 @@ public class KAIMyEntityClient {
         vector3f.y = Float.valueOf(splittedStr[1]);
         vector3f.z = Float.valueOf(splittedStr[2]);
         return vector3f;
-    }
-    
-    public static void drawText(String arg, int x, int y){
-        //MinecraftClient MCinstance = MinecraftClient.getInstance();
-        PoseStack mat;
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        mat = RenderSystem.getModelViewStack();
-        mat.pushPose();
-        //instance.textRenderer.draw(mat, arg, x, y, -1);
-        mat.popPose();
     }
 }

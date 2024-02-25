@@ -37,7 +37,7 @@ public class NativeFunc {
                 System.load(file.getAbsolutePath());
                 return; //File exist and loadable
             } catch (Error e) {
-                KAIMyEntityClient.logger.info("\"" + file.getAbsolutePath() + "\" broken! Trying recover it!");
+                KAIMyEntity.logger.info("\"" + file.getAbsolutePath() + "\" broken! Trying recover it!");
             }
         }
         try {
@@ -47,9 +47,9 @@ public class NativeFunc {
             System.load(file.getAbsolutePath());
         } catch (IOException e) {
             file.delete();
-            KAIMyEntityClient.logger.info("Download \"" + url.getPath() + "\" failed!");
-            KAIMyEntityClient.logger.info("Cannot download runtime!");
-            KAIMyEntityClient.logger.info("Check you internet connection and restart game!");
+            KAIMyEntity.logger.info("Download \"" + url.getPath() + "\" failed!");
+            KAIMyEntity.logger.info("Cannot download runtime!");
+            KAIMyEntity.logger.info("Check you internet connection and restart game!");
             e.printStackTrace();
             throw e;
         }
@@ -60,7 +60,7 @@ public class NativeFunc {
             DownloadSingleFile(new URL(urlMap.get(runtimeUrlRes.windows)), new File(gameDirectory, "KAIMyEntitySaba.dll"));
         }
         if (isLinux && !isAndroid) {
-            KAIMyEntityClient.logger.info("Not support!");
+            KAIMyEntity.logger.info("Not support!");
             throw new Error();
         }
         if (isLinux && isAndroid) {
@@ -73,7 +73,7 @@ public class NativeFunc {
         try {
             System.load(file.getAbsolutePath());
         } catch (Error e) {
-            KAIMyEntityClient.logger.info("Runtime \"" + file.getAbsolutePath() + "\" not found, try download from github!");
+            KAIMyEntity.logger.info("Runtime \"" + file.getAbsolutePath() + "\" not found, try download from github!");
             throw e;
         }
     }
@@ -81,15 +81,15 @@ public class NativeFunc {
     private void Init() {
         try {
             if (isWindows) {
-                KAIMyEntityClient.logger.info("Win32 Env Detected!");
+                KAIMyEntity.logger.info("Win32 Env Detected!");
                 LoadLibrary(new File(gameDirectory, "KAIMyEntitySaba.dll"));//WIN32
             }
             if (isLinux && !isAndroid) {
-                KAIMyEntityClient.logger.info("Linux Env Detected!");
+                KAIMyEntity.logger.info("Linux Env Detected!");
                 LoadLibrary(new File(gameDirectory, "KAIMyEntitySaba.so"));//Linux
             }
             if (isLinux && isAndroid) {
-                KAIMyEntityClient.logger.info("Android Env Detected!");
+                KAIMyEntity.logger.info("Android Env Detected!");
                 LoadLibrary(new File(RuntimePath, "libc++_shared.so"));
                 LoadLibrary(new File(RuntimePath, "KAIMyEntitySaba.so"));//Android
             }

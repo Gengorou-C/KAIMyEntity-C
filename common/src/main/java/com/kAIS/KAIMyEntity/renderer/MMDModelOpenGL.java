@@ -1,6 +1,6 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
@@ -88,7 +88,7 @@ public class MMDModelOpenGL implements IMMDModel {
         else
             model = nf.LoadModelPMX(modelFilename, modelDir, layerCount);
         if (model == 0) {
-            KAIMyEntityClient.logger.info(String.format("Cannot open model: '%s'.", modelFilename));
+            KAIMyEntity.logger.info(String.format("Cannot open model: '%s'.", modelFilename));
             return null;
         }
         BufferUploader.reset();
@@ -256,12 +256,12 @@ public class MMDModelOpenGL implements IMMDModel {
         deliverStack.translate(entityTrans.x, entityTrans.y, entityTrans.z);
         deliverStack.scale(0.09f, 0.09f, 0.09f);
         
-        if(KAIMyEntityClient.usingMMDShader == 0){
+        if(KAIMyEntity.usingMMDShader == 0){
             shaderProgram = RenderSystem.getShader().getId();
             setUniforms(RenderSystem.getShader(), deliverStack);
             RenderSystem.getShader().apply();
         }
-        if(KAIMyEntityClient.usingMMDShader == 1){
+        if(KAIMyEntity.usingMMDShader == 1){
             shaderProgram = MMDShaderProgram;
             GlStateManager._glUseProgram(shaderProgram);
         }
@@ -349,7 +349,7 @@ public class MMDModelOpenGL implements IMMDModel {
         RenderSystem.getProjectionMatrix().get(projMatBuff);
 
         //upload Uniforms(MMDShader)
-        if(KAIMyEntityClient.usingMMDShader == 1){
+        if(KAIMyEntity.usingMMDShader == 1){
             RenderSystem.glUniformMatrix4(modelViewLocation, false, modelViewMatBuff);
             RenderSystem.glUniformMatrix4(projMatLocation, false, projMatBuff);
 

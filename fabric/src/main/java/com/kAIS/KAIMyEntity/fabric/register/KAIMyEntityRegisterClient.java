@@ -1,6 +1,6 @@
 package com.kAIS.KAIMyEntity.fabric.register;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.fabric.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
@@ -58,15 +58,15 @@ public class KAIMyEntityRegisterClient {
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyReloadProperties.consumeClick()) {
-                KAIMyEntityClient.reloadProperties = true;
+                KAIMyEntity.reloadProperties = true;
             }
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyChangeProgram.consumeClick()) {
-                KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
-                if(KAIMyEntityClient.usingMMDShader == 0)
+                KAIMyEntity.usingMMDShader = 1 - KAIMyEntity.usingMMDShader;
+                if(KAIMyEntity.usingMMDShader == 0)
                     MCinstance.gui.getChat().addMessage(Component.nullToEmpty("Default shader"));
-                if(KAIMyEntityClient.usingMMDShader == 1)
+                if(KAIMyEntity.usingMMDShader == 1)
                     MCinstance.gui.getChat().addMessage(Component.nullToEmpty("MMDShader"));
             }
         });
@@ -79,7 +79,7 @@ public class KAIMyEntityRegisterClient {
                     if (EntityType.byString(mcEntityName).isPresent())
                         EntityRendererRegistry.register(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
                     else
-                        KAIMyEntityClient.logger.warn(mcEntityName + " not present, ignore rendering it!");
+                        KAIMyEntity.logger.warn(mcEntityName + " not present, ignore rendering it!");
                 }
             }
         }
@@ -93,7 +93,7 @@ public class KAIMyEntityRegisterClient {
             });
         });
         
-        KAIMyEntityClient.logger.info("KAIMyEntityRegisterClient.Register() finished");
+        KAIMyEntity.logger.info("KAIMyEntityRegisterClient.Register() finished");
     }
 
     public static void onKeyResetPhysicsDown() {
