@@ -1,8 +1,7 @@
-package com.kAIS.KAIMyEntity.register;
+package com.kAIS.KAIMyEntity.forge.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntity;
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
-import com.kAIS.KAIMyEntity.network.KAIMyEntityNetworkPack;
+import com.kAIS.KAIMyEntity.forge.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
@@ -114,14 +113,14 @@ public class KAIMyEntityRegisterClient {
             }
         }
         if (keyReloadProperties.isDown()) {
-            KAIMyEntityClient.reloadProperties = true;
+            KAIMyEntity.reloadProperties = true;
         }
         if (keyChangeProgram.isDown()) {
-            KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
+            KAIMyEntity.usingMMDShader = 1 - KAIMyEntity.usingMMDShader;
             
-            if(KAIMyEntityClient.usingMMDShader == 0)
+            if(KAIMyEntity.usingMMDShader == 0)
                 MCinstance.gui.getChat().addMessage(Component.literal("Default shader"));
-            if(KAIMyEntityClient.usingMMDShader == 1)
+            if(KAIMyEntity.usingMMDShader == 1)
                 MCinstance.gui.getChat().addMessage(Component.literal("MMDShader"));
         }
     }

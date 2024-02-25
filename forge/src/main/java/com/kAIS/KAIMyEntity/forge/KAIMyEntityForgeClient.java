@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity;
+package com.kAIS.KAIMyEntity.forge;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -13,7 +13,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.joml.Vector3f;
 
-import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
+import com.kAIS.KAIMyEntity.forge.register.KAIMyEntityRegisterClient;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
@@ -24,8 +24,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = KAIMyEntity.MODID)
-public class KAIMyEntityClient {
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = KAIMyEntityForge.MODID)
+public class KAIMyEntityForgeClient {
     public static final String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
     public static int usingMMDShader = 0;
     public static boolean reloadProperties = false;
@@ -35,13 +35,13 @@ public class KAIMyEntityClient {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        KAIMyEntity.logger.info("KAIMyEntity clientSetup begin...");
+        KAIMyEntityForge.logger.info("KAIMyEntity clientSetup begin...");
         checkKAIMyEntityFolder();
         MMDModelManager.Init();
         MMDTextureManager.Init();
         MMDAnimManager.Init();
         KAIMyEntityRegisterClient.Register();
-        KAIMyEntity.logger.info("KAIMyEntity clientSetup successful.");
+        KAIMyEntityForge.logger.info("KAIMyEntity clientSetup successful.");
     }
 
     private static String validateFilename(String filename, String intendedDir) throws java.io.IOException {
@@ -66,7 +66,7 @@ public class KAIMyEntityClient {
         long total = 0;
         try {
             while ((entry = zis.getNextEntry()) != null) {
-                KAIMyEntity.logger.info("Extracting: " + entry);
+                KAIMyEntityForge.logger.info("Extracting: " + entry);
                 int count;
                 byte data[] = new byte[BUFFER];
                 // Write the files to the disk, but ensure that the filename is valid,
@@ -74,7 +74,7 @@ public class KAIMyEntityClient {
                 String name = validateFilename(targetDir + entry.getName(), ".");
                 File targetFile = new File(name);
                 if (entry.isDirectory()) {
-                    KAIMyEntity.logger.info("Creating directory " + name);
+                    KAIMyEntityForge.logger.info("Creating directory " + name);
                     new File(name).mkdir();
                     continue;
                 }
@@ -106,18 +106,18 @@ public class KAIMyEntityClient {
     private static void checkKAIMyEntityFolder() {
         File KAIMyEntityFolder = new File(gameDirectory + "/KAIMyEntity");
         if (!KAIMyEntityFolder.exists()) {
-            KAIMyEntity.logger.info("KAIMyEntity folder not found, try download from github!");
+            KAIMyEntityForge.logger.info("KAIMyEntity folder not found, try download from github!");
             KAIMyEntityFolder.mkdir();
             try {
                 FileUtils.copyURLToFile(new URL("https://github.com/Gengorou-C/KAIMyEntity-C/releases/download/requiredFiles/KAIMyEntity.zip"), new File(gameDirectory + "/KAIMyEntity.zip"), 30000, 30000);
             } catch (IOException e) {
-                KAIMyEntity.logger.info("Download KAIMyEntity.zip failed!");
+                KAIMyEntityForge.logger.info("Download KAIMyEntity.zip failed!");
             }
 
             try {
                 unzip(gameDirectory + "/KAIMyEntity.zip", gameDirectory + "/KAIMyEntity/");
             } catch (IOException e) {
-                KAIMyEntity.logger.info("extract KAIMyEntity.zip failed!");
+                KAIMyEntityForge.logger.info("extract KAIMyEntity.zip failed!");
             }
         }
         return;
