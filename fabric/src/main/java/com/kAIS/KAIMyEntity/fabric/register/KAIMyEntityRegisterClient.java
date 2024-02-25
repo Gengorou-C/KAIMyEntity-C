@@ -1,7 +1,7 @@
-package com.kAIS.KAIMyEntity.register;
+package com.kAIS.KAIMyEntity.fabric.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
-import com.kAIS.KAIMyEntity.network.KAIMyEntityNetworkPack;
+import com.kAIS.KAIMyEntity.fabric.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;

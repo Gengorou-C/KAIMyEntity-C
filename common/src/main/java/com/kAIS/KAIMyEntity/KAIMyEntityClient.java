@@ -1,6 +1,5 @@
 package com.kAIS.KAIMyEntity;
 
-import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.apache.commons.io.FileUtils;
@@ -23,7 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 
-public class KAIMyEntityClient implements ClientModInitializer {
+public class KAIMyEntityClient {
+	public static final String MOD_ID = "kaimyentity";
     public static final Logger logger = LogManager.getLogger();
     public static int usingMMDShader = 0;
     public static boolean reloadProperties = false;
@@ -33,14 +32,12 @@ public class KAIMyEntityClient implements ClientModInitializer {
     static final int TOOMANY = 1024;      // Max number of files
     //public static String[] debugStr = new String[10];
 
-    @Override
-    public void onInitializeClient() {
+    public static void initClient() {
         logger.info("KAIMyEntity InitClient begin...");
         checkKAIMyEntityFolder();
         MMDModelManager.Init();
         MMDTextureManager.Init();
         MMDAnimManager.Init();
-        KAIMyEntityRegisterClient.Register();
         logger.info("KAIMyEntity InitClient successful.");
     }
 
@@ -103,7 +100,7 @@ public class KAIMyEntityClient implements ClientModInitializer {
         }
     }
 
-    private void checkKAIMyEntityFolder(){
+    private static void checkKAIMyEntityFolder(){
         File KAIMyEntityFolder = new File(gameDirectory + "/KAIMyEntity");
         if (!KAIMyEntityFolder.exists()){
             logger.info("KAIMyEntity folder not found, try download from github!");

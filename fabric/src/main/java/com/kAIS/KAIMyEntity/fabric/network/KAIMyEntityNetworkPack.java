@@ -1,6 +1,6 @@
-package com.kAIS.KAIMyEntity.network;
+package com.kAIS.KAIMyEntity.fabric.network;
 
-import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterCommon;
+import com.kAIS.KAIMyEntity.fabric.register.KAIMyEntityRegisterCommon;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import java.util.UUID;

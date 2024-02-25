@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.config;
+package com.kAIS.KAIMyEntity.fabric.config;
 
 import java.io.BufferedReader;
 import java.nio.file.Files;
