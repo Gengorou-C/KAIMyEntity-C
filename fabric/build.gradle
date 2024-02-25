@@ -2,6 +2,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
+version = "Fabric${project.minecraft_version}-${project.mod_version}"
+
 architectury {
     platformSetupLoomIde()
     fabric()

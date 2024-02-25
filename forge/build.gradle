@@ -2,6 +2,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
+version = "Forge${project.minecraft_version}-${project.mod_version}"
+
 architectury {
     platformSetupLoomIde()
     forge()
@@ -9,8 +11,8 @@ architectury {
 
 loom {
     forge {
-        mixinConfig "examplemod-common.mixins.json"
-        mixinConfig "examplemod.mixins.json"
+        mixinConfig "kaimyentity-common.mixins.json"
+        mixinConfig "mixins.kaimyentity.json"
     }
 }
 
