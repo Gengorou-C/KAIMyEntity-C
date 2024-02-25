@@ -1,20 +1,16 @@
 package com.kAIS.KAIMyEntity.forge.network;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
 import com.kAIS.KAIMyEntity.forge.register.KAIMyEntityRegisterCommon;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
-
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 public class KAIMyEntityNetworkPack {
     public int opCode;
@@ -40,29 +36,29 @@ public class KAIMyEntityNetworkPack {
         buffer.writeInt(arg0);
     }
 
-    public void Do(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() ->
+    public void Do(CustomPayloadEvent.Context ctx) {
+        ctx.enqueueWork(() ->
                 {
                     if (FMLEnvironment.dist == Dist.CLIENT) {
                         DoInClient();
                     } else {
-                        KAIMyEntityRegisterCommon.channel.send(PacketDistributor.ALL.noArg(), this);
+                        KAIMyEntityRegisterCommon.channel.send(this,PacketDistributor.ALL.noArg());
                     }
                 }
         );
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public void DoInClient() {
         Minecraft MCinstance = Minecraft.getInstance();
         //Ignore message when player is self.
-        assert Minecraft.getInstance().player != null;
+        assert MCinstance.player != null;
         if (playerUUID.equals(MCinstance.player.getUUID()))
             return;
         switch (opCode) {
             case 1: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert Minecraft.getInstance().level != null;
+                assert MCinstance.level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.CustomAnim(target, Integer.toString(arg0));
@@ -70,7 +66,7 @@ public class KAIMyEntityNetworkPack {
             }
             case 2: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert Minecraft.getInstance().level != null;
+                assert MCinstance.level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.ResetPhysics(target);

@@ -5,9 +5,13 @@ import com.kAIS.KAIMyEntity.forge.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-
 import com.mojang.blaze3d.platform.InputConstants;
-
+import java.io.File;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,16 +22,8 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.world.entity.EntityType;
-
+import net.minecraftforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
-
-import java.io.File;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class KAIMyEntityRegisterClient {
@@ -74,7 +70,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "1");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 1));
+                KAIMyEntityRegisterCommon.channel.send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 1), PacketDistributor.SERVER.noArg());
             }
         }
         if (keyCustomAnim2.isDown()) {
@@ -82,7 +78,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "2");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 2));
+                KAIMyEntityRegisterCommon.channel.send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 2), PacketDistributor.SERVER.noArg());
             }
         }
         if (keyCustomAnim3.isDown()) {
@@ -90,7 +86,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "3");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 3));
+                KAIMyEntityRegisterCommon.channel.send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 3), PacketDistributor.SERVER.noArg());
             }
         }
         if (keyCustomAnim4.isDown()) {
@@ -98,7 +94,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "4");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 4));
+                KAIMyEntityRegisterCommon.channel.send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 4), PacketDistributor.SERVER.noArg());
             }
         }
         if (keyReloadModels.isDown()) {
@@ -109,7 +105,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(2, localPlayer.getUUID(), 0));
+                KAIMyEntityRegisterCommon.channel.send(new KAIMyEntityNetworkPack(2, localPlayer.getUUID(), 0), PacketDistributor.SERVER.noArg());
             }
         }
         if (keyReloadProperties.isDown()) {
