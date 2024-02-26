@@ -2,6 +2,12 @@
 
 [English](https://github.com/Gengorou-C/KAIMyEntity-C/blob/develop-C/README_EN.md)
 
+## 0.
+
+高画質の画像を直接入れていたらGitのファイルサイズがデカくなってしまい、  
+上手く履歴からも削除しきれなかったのでリポジトリを新しく作成しました。  
+[古い方のリポジトリ](https://github.com/Gengorou-C/KAIMyEntity-C_old/releases)
+
 ## 1.初めに
 
 私はプロのプログラマーではありません。  
