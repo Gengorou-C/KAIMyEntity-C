@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 
 public class KAIMyEntityClient {
-	public static final String MOD_ID = "kaimyentity";
     public static final Logger logger = LogManager.getLogger();
     public static int usingMMDShader = 0;
     public static boolean reloadProperties = false;

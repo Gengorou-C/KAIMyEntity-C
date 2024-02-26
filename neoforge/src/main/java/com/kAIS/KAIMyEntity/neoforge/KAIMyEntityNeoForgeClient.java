@@ -1,6 +1,7 @@
 package com.kAIS.KAIMyEntity.neoforge;
 
 import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.neoforge.register.KAIMyEntityRegisterClient;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -11,9 +12,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 public class KAIMyEntityNeoForgeClient {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        KAIMyEntity.logger.info("KAIMyEntity InitClient begin...");
-        KAIMyEntity.initClient();
+        KAIMyEntityClient.logger.info("KAIMyEntity InitClient begin...");
+        KAIMyEntityClient.initClient();
         KAIMyEntityRegisterClient.Register();
-        KAIMyEntity.logger.info("KAIMyEntity InitClient successful.");
+        KAIMyEntityClient.logger.info("KAIMyEntity InitClient successful.");
     }
 }

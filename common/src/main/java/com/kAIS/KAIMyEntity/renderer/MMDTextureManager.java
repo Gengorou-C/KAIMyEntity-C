@@ -1,20 +1,23 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL46C;
 
 public class MMDTextureManager {
+    public static final Logger logger = LogManager.getLogger();
     static NativeFunc nf;
     static Map<String, Texture> textures;
 
     public static void Init() {
         nf = NativeFunc.GetInst();
         textures = new HashMap<>();
-        KAIMyEntityClient.logger.info("MMDTextureManager.Init() finished");
+        logger.info("MMDTextureManager.Init() finished");
     }
 
     public static Texture GetTexture(String filename) {
@@ -22,7 +25,7 @@ public class MMDTextureManager {
         if (result == null) {
             long nfTex = nf.LoadTexture(filename);
             if (nfTex == 0) {
-                KAIMyEntityClient.logger.info(String.format("Cannot find texture: %s", filename));
+                logger.info(String.format("Cannot find texture: %s", filename));
                 return null;
             }
             int x = nf.GetTextureX(nfTex);

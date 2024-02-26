@@ -1,6 +1,5 @@
 package com.kAIS.KAIMyEntity.neoforge.network;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.neoforge.register.KAIMyEntityRegisterCommon;
@@ -12,8 +11,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.NetworkEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KAIMyEntityNetworkPack {
+    public static final Logger logger = LogManager.getLogger();
     public int opCode;
     public UUID playerUUID;
     public int arg0;
@@ -60,7 +62,7 @@ public class KAIMyEntityNetworkPack {
         if (playerUUID.equals(MCinstance.player.getUUID()))
             return;
         if (targetPlayer == null){
-            KAIMyEntity.logger.warn("received an invalid UUID.");
+            logger.warn("received an invalid UUID.");
             return;
         }
         switch (opCode) {

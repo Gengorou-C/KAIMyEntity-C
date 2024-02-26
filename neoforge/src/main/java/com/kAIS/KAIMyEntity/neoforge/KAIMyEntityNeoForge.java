@@ -9,9 +9,12 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(KAIMyEntity.MOD_ID)
 public class KAIMyEntityNeoForge {
+    public static final Logger logger = LogManager.getLogger();
     //public static String[] debugStr = new String[hogehoge];
     public KAIMyEntityNeoForge() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
@@ -19,8 +22,8 @@ public class KAIMyEntityNeoForge {
     }
 
     public void preInit(FMLCommonSetupEvent event) {
-        KAIMyEntity.logger.info("KAIMyEntity preInit begin...");
+        logger.info("KAIMyEntity preInit begin...");
         KAIMyEntityRegisterCommon.Register();
-        KAIMyEntity.logger.info("KAIMyEntity preInit successful.");
+        logger.info("KAIMyEntity preInit successful.");
     }
 }
