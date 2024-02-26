@@ -72,3 +72,9 @@ publishing {
         // Add repositories to publish to here.
     }
 }
+
+runClient{
+	args "--username","Dev"
+	args "--width","1920"
+	args "--height","1080"
+}
