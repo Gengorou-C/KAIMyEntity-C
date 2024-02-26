@@ -2,7 +2,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-version = "Forge${project.minecraft_version}-${project.mod_version}"
+version = "NeoForge${project.minecraft_version}-${project.mod_version}"
 
 architectury {
     platformSetupLoomIde()
