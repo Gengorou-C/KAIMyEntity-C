@@ -30,9 +30,10 @@ repositories {
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "neoforge_version_range", project.neoforge_version_range
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+        expand(rootProject.properties)
     }
 }
 
