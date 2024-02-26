@@ -1,6 +1,6 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -55,7 +55,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                 animName = "sleep";
                 bodyYaw = ((LivingEntity) entityIn).getBedOrientation().toYRot() + 180.0f;
                 bodyPitch = model.properties.getProperty("sleepingPitch") == null ? 0.0f : Float.valueOf(model.properties.getProperty("sleepingPitch"));
-                entityTrans = model.properties.getProperty("sleepingTrans") == null ? new Vector3f(0.0f) : KAIMyEntity.str2Vec3f(model.properties.getProperty("sleepingTrans"));
+                entityTrans = model.properties.getProperty("sleepingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(model.properties.getProperty("sleepingTrans"));
                 AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Sleep, 0);
             }
             if(((LivingEntity) entityIn).isBaby()){
@@ -80,7 +80,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                 AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Idle, 0);
             }
         }
-        if(KAIMyEntity.calledFrom(6).contains("Inventory") || KAIMyEntity.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
+        if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
             int PosX_in_inventory;

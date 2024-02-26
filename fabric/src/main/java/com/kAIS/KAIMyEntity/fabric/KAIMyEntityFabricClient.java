@@ -1,15 +1,15 @@
 package com.kAIS.KAIMyEntity.fabric;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.fabric.register.KAIMyEntityRegisterClient;
 import net.fabricmc.api.ClientModInitializer;
 
 public class KAIMyEntityFabricClient implements ClientModInitializer {
   @Override
   public void onInitializeClient() {
-      KAIMyEntity.logger.info("KAIMyEntity InitClient begin...");
-      KAIMyEntity.initClient();
+      KAIMyEntityClient.logger.info("KAIMyEntity InitClient begin...");
+      KAIMyEntityClient.initClient();
       KAIMyEntityRegisterClient.Register();
-      KAIMyEntity.logger.info("KAIMyEntity InitClient successful.");
+      KAIMyEntityClient.logger.info("KAIMyEntity InitClient successful.");
   }
 }

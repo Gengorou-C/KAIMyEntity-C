@@ -1,6 +1,6 @@
 package com.kAIS.KAIMyEntity.forge.register;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.forge.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
@@ -50,14 +50,14 @@ public class KAIMyEntityRegisterClient {
                     String mcEntityName = i.getName().replace('.', ':');
                     if (EntityType.byString(mcEntityName).isPresent()){
                         RR.registerEntityRenderer(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
-                        KAIMyEntity.logger.info(mcEntityName + " is present, rendering it.");
+                        KAIMyEntityClient.logger.info(mcEntityName + " is present, rendering it.");
                     }else{
-                        KAIMyEntity.logger.warn(mcEntityName + " not present, ignore rendering it!");
+                        KAIMyEntityClient.logger.warn(mcEntityName + " not present, ignore rendering it!");
                     }
                 }
             }
         }
-        KAIMyEntity.logger.info("KAIMyEntityRegisterClient.Register() finished.");
+        KAIMyEntityClient.logger.info("KAIMyEntityRegisterClient.Register() finished.");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -109,14 +109,14 @@ public class KAIMyEntityRegisterClient {
             }
         }
         if (keyReloadProperties.isDown()) {
-            KAIMyEntity.reloadProperties = true;
+            KAIMyEntityClient.reloadProperties = true;
         }
         if (keyChangeProgram.isDown()) {
-            KAIMyEntity.usingMMDShader = 1 - KAIMyEntity.usingMMDShader;
+            KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
             
-            if(KAIMyEntity.usingMMDShader == 0)
+            if(KAIMyEntityClient.usingMMDShader == 0)
                 MCinstance.gui.getChat().addMessage(Component.literal("Default shader"));
-            if(KAIMyEntity.usingMMDShader == 1)
+            if(KAIMyEntityClient.usingMMDShader == 1)
                 MCinstance.gui.getChat().addMessage(Component.literal("MMDShader"));
         }
     }

@@ -1,6 +1,6 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +18,7 @@ public class MMDModelManager {
 
     public static void Init() {
         models = new HashMap<>();
-        KAIMyEntity.logger.info("MMDModelManager.Init() finished");
+        KAIMyEntityClient.logger.info("MMDModelManager.Init() finished");
     }
 
     public static IMMDModel LoadModel(String modelName, long layerCount) {
@@ -108,10 +108,10 @@ public class MMDModelManager {
                 InputStream istream = new FileInputStream(path2Properties);
                 properties.load(istream);
             } catch (IOException e) {
-                KAIMyEntity.logger.warn( "KAIMyEntity/" + modelName + "/model.properties not found" );
+                KAIMyEntityClient.logger.warn( "KAIMyEntity/" + modelName + "/model.properties not found" );
             }
             isPropertiesLoaded = true;
-            KAIMyEntity.reloadProperties = false;
+            KAIMyEntityClient.reloadProperties = false;
         } 
     }
 
