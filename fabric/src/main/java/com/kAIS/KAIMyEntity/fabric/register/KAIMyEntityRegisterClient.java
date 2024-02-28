@@ -67,7 +67,7 @@ public class KAIMyEntityRegisterClient {
             }
         });
 
-        if(KAIMyEntityConfig.isMDDShaderEnabled){
+        if(KAIMyEntityConfig.isMMDShaderEnabled){
             KeyBindingHelper.registerKeyBinding(keyChangeProgram);
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 while (keyChangeProgram.consumeClick()) {

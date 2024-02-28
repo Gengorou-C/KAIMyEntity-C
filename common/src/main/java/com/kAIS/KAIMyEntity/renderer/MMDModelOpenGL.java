@@ -28,6 +28,7 @@ public class MMDModelOpenGL implements IMMDModel {
     static NativeFunc nf;
     static boolean isShaderInited = false;
     static int MMDShaderProgram;
+    public static boolean isMMDShaderEnabled = false;
     int shaderProgram;
 
     int positionLocation;
@@ -83,7 +84,7 @@ public class MMDModelOpenGL implements IMMDModel {
     }
 
     public static MMDModelOpenGL Create(String modelFilename, String modelDir, boolean isPMD, long layerCount) {
-        if (!isShaderInited)
+        if (!isShaderInited && isMMDShaderEnabled)
             InitShader();
         if (nf == null) nf = NativeFunc.GetInst();
         long model;

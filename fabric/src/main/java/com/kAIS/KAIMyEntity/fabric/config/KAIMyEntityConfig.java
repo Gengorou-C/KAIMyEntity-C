@@ -10,7 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class KAIMyEntityConfig {
     public static boolean openGLEnableLighting = true;
     public static int modelPoolMaxCount = 100;
-    public static boolean isMDDShaderEnabled = false;
+    public static boolean isMMDShaderEnabled = false;
 
     static {
         try (BufferedReader reader = Files.newBufferedReader(FabricLoader.getInstance().getConfigDir().resolve("KAIMyEntity.properties"))) {
@@ -18,13 +18,13 @@ public final class KAIMyEntityConfig {
             properties.load(reader);
             KAIMyEntityConfig.openGLEnableLighting = Boolean.parseBoolean(properties.getProperty("openGLEnableLighting"));
             KAIMyEntityConfig.modelPoolMaxCount = Integer.parseInt(properties.getProperty("modelPoolMaxCount"));
-            KAIMyEntityConfig.isMDDShaderEnabled = Boolean.parseBoolean(properties.getProperty("isMDDShaderEnabled"));
+            KAIMyEntityConfig.isMMDShaderEnabled = Boolean.parseBoolean(properties.getProperty("isMMDShaderEnabled"));
         } catch (Exception ignored) {
             try (BufferedWriter writer = Files.newBufferedWriter(FabricLoader.getInstance().getConfigDir().resolve("KAIMyEntity.properties"))){
                 Properties properties = new Properties();
                 properties.setProperty("openGLEnableLighting", "true");
                 properties.setProperty("modelPoolMaxCount",    "100");
-                properties.setProperty("isMDDShaderEnabled",   "falase");
+                properties.setProperty("isMMDShaderEnabled",   "false");
                 properties.store(writer, properties.toString());
             } catch (IOException e){
                 System.out.println(e);
