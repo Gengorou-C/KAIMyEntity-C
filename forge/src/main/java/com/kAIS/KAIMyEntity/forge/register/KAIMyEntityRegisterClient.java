@@ -1,6 +1,7 @@
 package com.kAIS.KAIMyEntity.forge.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.forge.config.KAIMyEntityConfig;
 import com.kAIS.KAIMyEntity.forge.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
@@ -44,8 +45,10 @@ public class KAIMyEntityRegisterClient {
         Minecraft MCinstance = Minecraft.getInstance();
         RegisterRenderers RR = new RegisterRenderers();
         RegisterKeyMappingsEvent RKE = new RegisterKeyMappingsEvent(MCinstance.options);
-        for (KeyMapping i : new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties, keyChangeProgram})
+        for (KeyMapping i : new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties})
             RKE.register(i);
+        if(KAIMyEntityConfig.isMMDShaderEnabled.get())
+            RKE.register(keyChangeProgram);
 
         File[] modelDirs = new File(MCinstance.gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
@@ -115,7 +118,7 @@ public class KAIMyEntityRegisterClient {
         if (keyReloadProperties.isDown()) {
             KAIMyEntityClient.reloadProperties = true;
         }
-        if (keyChangeProgram.isDown()) {
+        if (keyChangeProgram.isDown() && KAIMyEntityConfig.isMMDShaderEnabled.get()) {
             KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
             
             if(KAIMyEntityClient.usingMMDShader == 0)

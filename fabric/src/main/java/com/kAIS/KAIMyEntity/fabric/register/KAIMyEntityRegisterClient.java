@@ -1,6 +1,7 @@
 package com.kAIS.KAIMyEntity.fabric.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.fabric.config.KAIMyEntityConfig;
 import com.kAIS.KAIMyEntity.fabric.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
@@ -35,7 +36,7 @@ public class KAIMyEntityRegisterClient {
     static KeyMapping keyCustomAnim2 = new KeyMapping("key.customAnim2", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
     static KeyMapping keyCustomAnim3 = new KeyMapping("key.customAnim3", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
     static KeyMapping keyCustomAnim4 = new KeyMapping("key.customAnim4", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.title");
-    static KeyMapping[] keyBindings = new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties, keyChangeProgram};
+    static KeyMapping[] keyBindings = new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties};
     static KeyMapping[] customKeyBindings = new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4};
 
     public static void Register() {
@@ -65,15 +66,19 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntityClient.reloadProperties = true;
             }
         });
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyChangeProgram.consumeClick()) {
-                KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
-                if(KAIMyEntityClient.usingMMDShader == 0)
-                    MCinstance.gui.getChat().addMessage(Component.nullToEmpty("Default shader"));
-                if(KAIMyEntityClient.usingMMDShader == 1)
-                    MCinstance.gui.getChat().addMessage(Component.nullToEmpty("MMDShader"));
-            }
-        });
+
+        if(KAIMyEntityConfig.isMDDShaderEnabled){
+            KeyBindingHelper.registerKeyBinding(keyChangeProgram);
+            ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                while (keyChangeProgram.consumeClick()) {
+                    KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
+                    if(KAIMyEntityClient.usingMMDShader == 0)
+                        MCinstance.gui.getChat().addMessage(Component.nullToEmpty("Default shader"));
+                    if(KAIMyEntityClient.usingMMDShader == 1)
+                        MCinstance.gui.getChat().addMessage(Component.nullToEmpty("MMDShader"));
+                }
+            });
+        }
 
         File[] modelDirs = new File(MCinstance.gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
