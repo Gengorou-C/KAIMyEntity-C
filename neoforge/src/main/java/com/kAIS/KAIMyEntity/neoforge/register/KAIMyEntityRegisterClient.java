@@ -21,12 +21,16 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.fml.common.Mod;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 //import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class KAIMyEntityRegisterClient {
+    static final Logger logger = LogManager.getLogger();
     static KeyMapping keyCustomAnim1 = new KeyMapping("key.customAnim1", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.title");
     static KeyMapping keyCustomAnim2 = new KeyMapping("key.customAnim2", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
     static KeyMapping keyCustomAnim3 = new KeyMapping("key.customAnim3", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
@@ -50,14 +54,14 @@ public class KAIMyEntityRegisterClient {
                     String mcEntityName = i.getName().replace('.', ':');
                     if (EntityType.byString(mcEntityName).isPresent()){
                         RR.registerEntityRenderer(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
-                        KAIMyEntityClient.logger.info(mcEntityName + " is present, rendering it.");
+                        logger.info(mcEntityName + " is present, rendering it.");
                     }else{
-                        KAIMyEntityClient.logger.warn(mcEntityName + " not present, ignore rendering it!");
+                        logger.warn(mcEntityName + " not present, ignore rendering it!");
                     }
                 }
             }
         }
-        KAIMyEntityClient.logger.info("KAIMyEntityRegisterClient.Register() finished.");
+        logger.info("KAIMyEntityRegisterClient.Register() finished.");
     }
 
     @OnlyIn(Dist.CLIENT)

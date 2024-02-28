@@ -15,12 +15,16 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LightLayer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46C;
 import org.lwjgl.system.MemoryUtil;
 
 public class MMDModelOpenGL implements IMMDModel {
+    static final Logger logger = LogManager.getLogger();
     static NativeFunc nf;
     static boolean isShaderInited = false;
     static int MMDShaderProgram;
@@ -88,7 +92,7 @@ public class MMDModelOpenGL implements IMMDModel {
         else
             model = nf.LoadModelPMX(modelFilename, modelDir, layerCount);
         if (model == 0) {
-            KAIMyEntityClient.logger.info(String.format("Cannot open model: '%s'.", modelFilename));
+            logger.info(String.format("Cannot open model: '%s'.", modelFilename));
             return null;
         }
         BufferUploader.reset();

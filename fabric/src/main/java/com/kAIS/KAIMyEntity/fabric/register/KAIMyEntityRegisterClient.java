@@ -19,10 +19,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class KAIMyEntityRegisterClient {
+    static final Logger logger = LogManager.getLogger();
     static KeyMapping keyResetPhysics = new KeyMapping("key.resetPhysics", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, "key.title");
     static KeyMapping keyReloadModels = new KeyMapping("key.reloadModels", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.title");
     static KeyMapping keyReloadProperties = new KeyMapping("key.reloadProperties", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, "key.title");
@@ -79,7 +83,7 @@ public class KAIMyEntityRegisterClient {
                     if (EntityType.byString(mcEntityName).isPresent())
                         EntityRendererRegistry.register(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
                     else
-                        KAIMyEntityClient.logger.warn(mcEntityName + " not present, ignore rendering it!");
+                        logger.warn(mcEntityName + " not present, ignore rendering it!");
                 }
             }
         }
@@ -93,7 +97,7 @@ public class KAIMyEntityRegisterClient {
             });
         });
         
-        KAIMyEntityClient.logger.info("KAIMyEntityRegisterClient.Register() finished");
+        logger.info("KAIMyEntityRegisterClient.Register() finished");
     }
 
     public static void onKeyResetPhysicsDown() {

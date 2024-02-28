@@ -10,15 +10,20 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.client.Minecraft;
 
 public class MMDModelManager {
+    static final Logger logger = LogManager.getLogger();
     static Map<String, Model> models;
     static String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
 
     public static void Init() {
         models = new HashMap<>();
-        KAIMyEntityClient.logger.info("MMDModelManager.Init() finished");
+        logger.info("MMDModelManager.Init() finished");
     }
 
     public static IMMDModel LoadModel(String modelName, long layerCount) {
@@ -108,7 +113,7 @@ public class MMDModelManager {
                 InputStream istream = new FileInputStream(path2Properties);
                 properties.load(istream);
             } catch (IOException e) {
-                KAIMyEntityClient.logger.warn( "KAIMyEntity/" + modelName + "/model.properties not found" );
+                logger.warn( "KAIMyEntity/" + modelName + "/model.properties not found" );
             }
             isPropertiesLoaded = true;
             KAIMyEntityClient.reloadProperties = false;
