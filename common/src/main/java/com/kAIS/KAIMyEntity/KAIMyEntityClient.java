@@ -32,12 +32,10 @@ public class KAIMyEntityClient {
     //public static String[] debugStr = new String[10];
 
     public static void initClient() {
-        logger.info("KAIMyEntity InitClient begin...");
         checkKAIMyEntityFolder();
         MMDModelManager.Init();
         MMDTextureManager.Init();
         MMDAnimManager.Init();
-        logger.info("KAIMyEntity InitClient successful.");
     }
 
     private static String validateFilename(String filename, String intendedDir) throws java.io.IOException {
