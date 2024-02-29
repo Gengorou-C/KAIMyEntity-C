@@ -7,6 +7,8 @@ import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.io.File;
 import java.util.UUID;
 import net.fabricmc.api.EnvType;
@@ -109,13 +111,17 @@ public class KAIMyEntityRegisterClient {
         Minecraft MCinstance = Minecraft.getInstance();
         LocalPlayer localPlayer = MCinstance.player;
         KAIMyEntityNetworkPack.sendToServer(2, localPlayer.getUUID(), 0);
-        KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
+        RenderSystem.recordRenderCall(()->{
+            KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
+        });
     }
 
     public static void onCustomKeyDown(Integer numOfKey) {
         Minecraft MCinstance = Minecraft.getInstance();
         LocalPlayer localPlayer = MCinstance.player;
         KAIMyEntityNetworkPack.sendToServer(1, localPlayer.getUUID(), numOfKey);
-        KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, numOfKey.toString());
+        RenderSystem.recordRenderCall(()->{
+            KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, numOfKey.toString());
+        });
     }
 }
