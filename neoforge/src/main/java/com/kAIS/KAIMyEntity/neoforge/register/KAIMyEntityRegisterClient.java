@@ -18,6 +18,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -77,7 +78,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "1");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 1));
+                PacketDistributor.SERVER.noArg().send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 1));
             }
         }
         if (keyCustomAnim2.isDown()) {
@@ -85,7 +86,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "2");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 2));
+                PacketDistributor.SERVER.noArg().send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 2));
             }
         }
         if (keyCustomAnim3.isDown()) {
@@ -93,7 +94,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "3");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 3));
+                PacketDistributor.SERVER.noArg().send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 3));
             }
         }
         if (keyCustomAnim4.isDown()) {
@@ -101,7 +102,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "4");
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 4));
+                PacketDistributor.SERVER.noArg().send(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 4));
             }
         }
         if (keyReloadModels.isDown()) {
@@ -112,7 +113,7 @@ public class KAIMyEntityRegisterClient {
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
                 assert localPlayer != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(2, localPlayer.getUUID(), 0));
+                PacketDistributor.SERVER.noArg().send(new KAIMyEntityNetworkPack(2, localPlayer.getUUID(), 0));
             }
         }
         if (keyReloadProperties.isDown()) {

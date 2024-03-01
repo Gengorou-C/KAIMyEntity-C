@@ -2,20 +2,22 @@ package com.kAIS.KAIMyEntity.neoforge.network;
 
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-import com.kAIS.KAIMyEntity.neoforge.register.KAIMyEntityRegisterCommon;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.network.NetworkEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KAIMyEntityNetworkPack {
+public class KAIMyEntityNetworkPack implements CustomPacketPayload{
     public static final Logger logger = LogManager.getLogger();
+    public static ResourceLocation id = new ResourceLocation("kaimyentity", "networkpack");
     public int opCode;
     public UUID playerUUID;
     public int arg0;
@@ -32,25 +34,17 @@ public class KAIMyEntityNetworkPack {
         arg0 = buffer.readInt();
     }
 
-    public void Pack(FriendlyByteBuf buffer) {
+    @Override
+    public void write(FriendlyByteBuf buffer){
         buffer.writeInt(opCode);
         buffer.writeLong(playerUUID.getMostSignificantBits());
         buffer.writeLong(playerUUID.getLeastSignificantBits());
         buffer.writeInt(arg0);
     }
 
-    
-    public void Do(NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() ->
-                {
-                    if (FMLEnvironment.dist == Dist.CLIENT) {
-                        DoInClient();
-                    } else {
-                        KAIMyEntityRegisterCommon.channel.send(PacketDistributor.ALL.noArg(), this);
-                    }
-                }
-        );
-        ctx.setPacketHandled(true);
+    @Override
+    public ResourceLocation id(){
+        return id;
     }
 
     public void DoInClient() {
@@ -67,17 +61,25 @@ public class KAIMyEntityNetworkPack {
         }
         switch (opCode) {
             case 1: {
+                RenderSystem.recordRenderCall(()->{
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + targetPlayer.getName().getString());
                 if (m != null)
                     KAIMyEntityRendererPlayerHelper.CustomAnim(targetPlayer, Integer.toString(arg0));
+                });
                 break;
             }
             case 2: {
+                RenderSystem.recordRenderCall(()->{
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + targetPlayer.getName().getString());
                 if (m != null)
                     KAIMyEntityRendererPlayerHelper.ResetPhysics(targetPlayer);
+                });
                 break;
             }
         }
+    }
+
+    public void DoInServer(){
+        PacketDistributor.ALL.noArg().send(this);
     }
 }
