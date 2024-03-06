@@ -1,25 +1,28 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
-import net.minecraft.client.MinecraftClient;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.client.Minecraft;
+
 public class MMDAnimManager {
+    public static final Logger logger = LogManager.getLogger();
     static NativeFunc nf;
     static Map<String, Long> animStatic;
     static Map<IMMDModel, Map<String, Long>> animModel;
-    static String defaultAnimDir = new File(MinecraftClient.getInstance().runDirectory, "KAIMyEntity/DefaultAnim").getAbsolutePath();
+    static String defaultAnimDir = new File(Minecraft.getInstance().gameDirectory, "KAIMyEntity/DefaultAnim").getAbsolutePath();
 
     public static void Init() {
         nf = NativeFunc.GetInst();
         animStatic = new HashMap<>();
         animModel = new HashMap<>();
-        KAIMyEntityClient.logger.info("MMDAnimManager.Init() finished");
+        logger.info("MMDAnimManager.Init() finished");
     }
 
     public static void AddModel(IMMDModel model) {

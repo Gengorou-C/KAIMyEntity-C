@@ -1,16 +1,18 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
-import net.minecraft.client.MinecraftClient;
-import org.lwjgl.opengl.GL46C;
-
 import java.io.FileInputStream;
+import net.minecraft.client.Minecraft;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.GL46C;
 
 public class ShaderProvider {
     private static boolean isInited = false;
     private static int program = 0;
-    private static final String vertexPath = MinecraftClient.getInstance().runDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.vsh";
-    private static final String fragPath = MinecraftClient.getInstance().runDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.fsh";
+    private static final String vertexPath = Minecraft.getInstance().gameDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.vsh";
+    private static final String fragPath = Minecraft.getInstance().gameDirectory.getAbsolutePath() + "/KAIMyEntity/Shader/MMDShader.fsh";
+    public static final Logger logger = LogManager.getLogger();
 
     public static void Init() {
         if (!isInited) {
@@ -28,14 +30,14 @@ public class ShaderProvider {
                 GL46C.glCompileShader(vertexShader);
                 if (GL46C.glGetShaderi(vertexShader, GL46C.GL_COMPILE_STATUS) == GL46C.GL_FALSE) {
                     String log = GL46C.glGetShaderInfoLog(vertexShader, 8192).trim();
-                    KAIMyEntityClient.logger.error("Failed to compile shader {}", log);
+                    logger.error("Failed to compile shader {}", log);
                     GL46C.glDeleteShader(vertexShader);
                 }
 
                 GL46C.glCompileShader(fragShader);
                 if (GL46C.glGetShaderi(fragShader, GL46C.GL_COMPILE_STATUS) == GL46C.GL_FALSE) {
                     String log = GL46C.glGetShaderInfoLog(fragShader, 8192).trim();
-                    KAIMyEntityClient.logger.error("Failed to compile shader {}", log);
+                    logger.error("Failed to compile shader {}", log);
                     GL46C.glDeleteShader(fragShader);
                 }
                 program = GL46C.glCreateProgram();
@@ -44,11 +46,11 @@ public class ShaderProvider {
                 GL46C.glLinkProgram(program);
                 if (GL46C.glGetProgrami(program, GL46C.GL_LINK_STATUS) == GL46C.GL_FALSE) {
                     String log = GL46C.glGetProgramInfoLog(program, 8192);
-                    KAIMyEntityClient.logger.error("Failed to link shader program\n{}", log);
+                    logger.error("Failed to link shader program\n{}", log);
                     GL46C.glDeleteProgram(program);
                     program = 0;
                 }
-                KAIMyEntityClient.logger.info("MMD Shader Initialize finished");
+                logger.info("MMD Shader Initialize finished");
             } catch (Exception e) {
                 e.printStackTrace();
             }
