@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "kaimyentity",
+  "version": "${version}",
+
+  "name": "KAIMyEntity-C",
+  "description": "A forge & fabric mod to replace any entity with MMD models in Minecraft ",
+  "authors": [
+    "kjkjkAIStudio",
+    "asuka-mio",
+    "Gengorou-C"
+  ],
+  "contact": {
+    "sources": "https://github.com/Gengorou-C/KAIMyEntity-C"
+  },
+
+  "license": "MIT",
+  "icon": "assets/kaimyentity/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.kAIS.KAIMyEntity.fabric.KAIMyEntityFabric"
+    ],
+    "client": [
+      "com.kAIS.KAIMyEntity.fabric.KAIMyEntityFabricClient"
+    ]
+  },
+  "mixins": [
+    "kaimyentity-common.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
