@@ -13,12 +13,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod("kaimyentity")
-public class KAIMyEntity {
+public class KAIMyEntityForge {
     public static final String MODID = "kaimyentity";
     public static Logger logger = LogManager.getLogger("KAIMyEntity");
     //public static String[] debugStr = new String[hogehoge];
 
-    public KAIMyEntity() {
+    public KAIMyEntityForge() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, KAIMyEntityConfig.config);
     }

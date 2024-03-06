@@ -1,5 +1,13 @@
 package com.kAIS.KAIMyEntity;
 
+import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
+import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
+import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
+import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.MinecraftClient;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -11,37 +19,28 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 
-import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
-import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
-import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
-
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = KAIMyEntity.MODID)
-public class KAIMyEntityClient {
-    public static final String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
+public class KAIMyEntityFabricClient implements ClientModInitializer {
+    public static final Logger logger = LogManager.getLogger();
     public static int usingMMDShader = 0;
     public static boolean reloadProperties = false;
+    static String gameDirectory = MinecraftClient.getInstance().runDirectory.getAbsolutePath();
     static final int BUFFER = 512;
     static final long TOOBIG = 0x6400000; // Max size of unzipped data, 100MB
-    static final int TOOMANY = 1024; // Max number of files
+    static final int TOOMANY = 1024;      // Max number of files
 
-    @SubscribeEvent
-    public static void clientSetup(FMLClientSetupEvent event) {
-        KAIMyEntity.logger.info("KAIMyEntity clientSetup begin...");
+    @Override
+    public void onInitializeClient() {
+        logger.info("KAIMyEntity InitClient begin...");
         checkKAIMyEntityFolder();
         MMDModelManager.Init();
         MMDTextureManager.Init();
         MMDAnimManager.Init();
         KAIMyEntityRegisterClient.Register();
-        KAIMyEntity.logger.info("KAIMyEntity clientSetup successful.");
+        logger.info("KAIMyEntity InitClient successful.");
     }
 
     private static String validateFilename(String filename, String intendedDir) throws java.io.IOException {
@@ -66,19 +65,19 @@ public class KAIMyEntityClient {
         long total = 0;
         try {
             while ((entry = zis.getNextEntry()) != null) {
-                KAIMyEntity.logger.info("Extracting: " + entry);
+                logger.info("Extracting: " + entry);
                 int count;
                 byte data[] = new byte[BUFFER];
                 // Write the files to the disk, but ensure that the filename is valid,
                 // and that the file is not insanely big
-                String name = validateFilename(targetDir + entry.getName(), ".");
+                String name = validateFilename(targetDir+entry.getName(), ".");
                 File targetFile = new File(name);
                 if (entry.isDirectory()) {
-                    KAIMyEntity.logger.info("Creating directory " + name);
+                    logger.info("Creating directory " + name);
                     new File(name).mkdir();
                     continue;
                 }
-                if (!targetFile.getParentFile().exists()) {
+                if (!targetFile.getParentFile().exists()){
                     targetFile.getParentFile().mkdirs();
                 }
                 FileOutputStream fos = new FileOutputStream(name);
@@ -103,21 +102,21 @@ public class KAIMyEntityClient {
         }
     }
 
-    private static void checkKAIMyEntityFolder() {
+    private void checkKAIMyEntityFolder(){
         File KAIMyEntityFolder = new File(gameDirectory + "/KAIMyEntity");
-        if (!KAIMyEntityFolder.exists()) {
-            KAIMyEntity.logger.info("KAIMyEntity folder not found, try download from github!");
+        if (!KAIMyEntityFolder.exists()){
+            logger.info("KAIMyEntity folder not found, try download from github!");
             KAIMyEntityFolder.mkdir();
-            try {
+            try{
                 FileUtils.copyURLToFile(new URL("https://github.com/Gengorou-C/KAIMyEntity-C/releases/download/requiredFiles/KAIMyEntity.zip"), new File(gameDirectory + "/KAIMyEntity.zip"), 30000, 30000);
-            } catch (IOException e) {
-                KAIMyEntity.logger.info("Download KAIMyEntity.zip failed!");
+            }catch (IOException e){
+                logger.info("Download KAIMyEntity.zip failed!");
             }
 
-            try {
+            try{
                 unzip(gameDirectory + "/KAIMyEntity.zip", gameDirectory + "/KAIMyEntity/");
-            } catch (IOException e) {
-                KAIMyEntity.logger.info("extract KAIMyEntity.zip failed!");
+            }catch (IOException e){
+                logger.info("extract KAIMyEntity.zip failed!");
             }
         }
         return;
