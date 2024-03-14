@@ -158,7 +158,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 PTS_modelViewStack.pushPose();
                 int PosX_in_inventory;
                 int PosY_in_inventory;
-                if(MCinstance.gameMode.getPlayerMode() != GameType.CREATIVE){
+                if(MCinstance.gameMode.getPlayerMode() != GameType.CREATIVE && MCinstance.screen instanceof InventoryScreen){
                     PosX_in_inventory = ((InventoryScreen) MCinstance.screen).getRecipeBookComponent().updateScreenPosition(MCinstance.screen.width, 176);
                     PosY_in_inventory = (MCinstance.screen.height - 166) / 2;
                     PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, 50);
