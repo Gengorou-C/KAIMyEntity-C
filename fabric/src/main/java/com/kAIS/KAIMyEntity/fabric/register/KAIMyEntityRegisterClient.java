@@ -103,7 +103,17 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntityNetworkPack.DoInClient(opCode, playerUUID, arg0);
             });
         });
-        
+
+        /* 
+        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (MCinstance.player != null) {
+                ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, tickDelta) -> {
+                    matrices.drawString(MCinstance.font, "XRot : "+String.valueOf(MCinstance.player.getXRot()), 1,30,0xffffff);
+                    matrices.drawString(MCinstance.font, "YRot : "+String.valueOf(MCinstance.player.getYRot()), 100,30,0xffffff);
+                    matrices.drawString(MCinstance.font, "entityYaw : "+KAIMyEntityClient.debugStr[0], 1,60,0xffffff);
+                });
+            }
+        });*/
         logger.info("KAIMyEntityRegisterClient.Register() finished");
     }
 

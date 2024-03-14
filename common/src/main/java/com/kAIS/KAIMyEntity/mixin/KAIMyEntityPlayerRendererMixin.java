@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -38,10 +39,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
     }
 
     @Inject(method = {"render"}, at = @At("HEAD"), cancellable = true)
-    public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource vertexConsumers, int packedLightIn, CallbackInfo ci) {
+    public void render(AbstractClientPlayer entityIn, float entityYaw, float tickDelta, PoseStack matrixStackIn, MultiBufferSource vertexConsumers, int packedLightIn, CallbackInfo ci) {
         Minecraft MCinstance = Minecraft.getInstance();
         IMMDModel model = null;
-        float bodyYaw = entityIn.yBodyRot;
+        float bodyYaw = Mth.rotLerp(tickDelta, entityIn.yBodyRotO, entityIn.yBodyRot);
         float bodyPitch = 0.0f;
         Vector3f entityTrans = new Vector3f(0.0f);
         MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + entityIn.getName().getString());
@@ -49,7 +50,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             m = MMDModelManager.GetModel("EntityPlayer");
         }
         if (m == null){
-            super.render(entityIn, entityYaw, partialTicks, matrixStackIn, vertexConsumers, packedLightIn);
+            super.render(entityIn, entityYaw, tickDelta, matrixStackIn, vertexConsumers, packedLightIn);
             return;
         } 
         if (m != null){
@@ -84,10 +85,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 } else if (entityIn.isPassenger()) {
                     if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.xo != 0.0f || entityIn.getZ() - entityIn.zo != 0.0f)){
                         AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.OnHorse, 0);
-                        bodyYaw = entityIn.getVehicle().getYRot();
                     }else if(entityIn.getVehicle().getType() == EntityType.HORSE){
                         AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Ride, 0);
-                        bodyYaw = entityIn.getVehicle().getYRot();
                     }else{
                         AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Ride, 0);
                     }
@@ -178,7 +177,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 quaternionf.mul(quaternionf2);
                 PTS_modelViewStack.mulPose(quaternionf);
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
-                model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), PTS_modelViewStack, packedLightIn);
+                model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), tickDelta, PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.popPose();
                 matrixStackIn.mulPose(quaternionf2);
                 matrixStackIn.scale(size[1], size[1], size[1]);
@@ -186,7 +185,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             }else{
                 matrixStackIn.scale(size[0], size[0], size[0]);
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
-                model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, matrixStackIn, packedLightIn);
+                model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, tickDelta, matrixStackIn, packedLightIn);
             }
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;

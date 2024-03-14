@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FileUtils;
@@ -19,17 +21,27 @@ public class NativeFunc {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
     private static final HashMap<runtimeUrlRes, String> urlMap = new HashMap<runtimeUrlRes, String>() {
         {
-            put(runtimeUrlRes.windows, "https://github.com/Gengorou-C/KAIMyEntitySaba/releases/download/20221215/KAIMyEntitySaba.dll");
+            put(runtimeUrlRes.windows, "https://github.com/Gengorou-C/KAIMyEntitySaba/releases/download/20240314/KAIMyEntitySaba.dll");
             put(runtimeUrlRes.android_arch64, "https://github.com.cnpmjs.org/asuka-mio/KAIMyEntitySaba/releases/download/crossplatform/KAIMyEntitySaba.so");
             put(runtimeUrlRes.android_arch64_libc, "https://github.com.cnpmjs.org/asuka-mio/KAIMyEntitySaba/releases/download/crossplatform/libc++_shared.so");
         }
     };
     static NativeFunc inst;
+    static final String libraryVersion = "C-20240314";
 
     public static NativeFunc GetInst() {
         if (inst == null) {
             inst = new NativeFunc();
             inst.Init();
+            if(!inst.GetVersion().equals(libraryVersion)){
+                logger.warn("Incompatible Version dll. / loaded ver -> " + inst.GetVersion() + " / required ver -> "+ libraryVersion);
+                logger.warn("Please restart or download dll.");
+                try{
+                    Files.move(Paths.get(gameDirectory, "KAIMyEntitySaba.dll"),Paths.get(gameDirectory, "KAIMyEntitySaba.dll.old"));
+                }catch(Exception e){
+                    logger.info(e);
+                }
+            }
         }
         return inst;
     }
@@ -202,6 +214,8 @@ public class NativeFunc {
     public native long LoadAnimation(long model, String filename);
 
     public native void DeleteAnimation(long anim);
+
+    public native void SetHeadAngle(long model, float x, float y, float z, boolean flag);
 
     enum runtimeUrlRes {
         windows,android_arch64, android_arch64_libc

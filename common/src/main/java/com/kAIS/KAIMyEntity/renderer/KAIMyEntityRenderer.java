@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Quaternionf;
@@ -31,11 +32,14 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
     }
 
     @Override
-    public void render(T entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(T entityIn, float entityYaw, float tickDelta, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         Minecraft MCinstance = Minecraft.getInstance();
-        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        super.render(entityIn, entityYaw, tickDelta, matrixStackIn, bufferIn, packedLightIn);
         String animName = "";
         float bodyYaw = entityYaw;
+        if(entityIn instanceof LivingEntity){
+            bodyYaw = Mth.rotLerp(tickDelta, ((LivingEntity)entityIn).yBodyRotO, ((LivingEntity)entityIn).yBodyRot);
+        }
         float bodyPitch = 0.0f;
         Vector3f entityTrans = new Vector3f(0.0f);
         MMDModelManager.Model model = MMDModelManager.GetModel(modelName, entityIn.getStringUUID());
@@ -98,12 +102,12 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             quaternionf.mul(quaternionf2);
             PTS_modelViewStack.mulPose(quaternionf);
             RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
-            model.model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), PTS_modelViewStack, packedLightIn);
+            model.model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), tickDelta, PTS_modelViewStack, packedLightIn);
             PTS_modelViewStack.popPose();
         }else{
             matrixStackIn.scale(size[0], size[0], size[0]);
             RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
-            model.model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, matrixStackIn, packedLightIn);
+            model.model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, tickDelta, matrixStackIn, packedLightIn);
         }
         matrixStackIn.popPose();
     }
