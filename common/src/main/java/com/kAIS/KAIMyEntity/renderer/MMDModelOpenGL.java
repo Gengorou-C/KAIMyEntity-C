@@ -13,7 +13,9 @@ import java.nio.FloatBuffer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.LightLayer;
 
 import org.apache.logging.log4j.LogManager;
@@ -222,7 +224,38 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.DeleteModel(model.model);
     }
 
-    public void Render(Entity entityIn, float entityYaw, float entityPitch, Vector3f entityTrans, PoseStack mat, int packedLight) {
+    public void Render(Entity entityIn, float entityYaw, float entityPitch, Vector3f entityTrans, float tickDelta, PoseStack mat, int packedLight) {
+        if(entityIn instanceof LivingEntity && tickDelta != 1.0f){
+            RenderLivingEntity((LivingEntity)entityIn, entityYaw, entityPitch, entityTrans, tickDelta, mat, packedLight);
+            return;
+        }
+        Update();
+        RenderModel(entityIn, entityYaw, entityPitch, entityTrans, mat);
+    }
+
+    public void RenderLivingEntity(LivingEntity entityIn, float entityYaw, float entityPitch, Vector3f entityTrans, float tickDelta, PoseStack mat, int packedLight) {
+        float headAngleX = entityIn.getXRot();
+        float headAngleY = (entityYaw - Mth.lerp(tickDelta, entityIn.yHeadRotO, entityIn.yHeadRot))%360.0f;
+        if(headAngleX < -50.0f){
+            headAngleX = -50.0f;
+        }else if(50.0f < headAngleX){
+            headAngleX = 50.0f;
+        }
+        if(headAngleY < -180.0f){
+            headAngleY = headAngleY + 360.0f;
+        } else if(180.0f < headAngleY){
+            headAngleY = headAngleY - 360.0f;
+        }
+        if(headAngleY < -80.0f){
+            headAngleY = -80.0f;
+        }else if(80.0f < headAngleY){
+            headAngleY = 80.0f;
+        }
+        if(KAIMyEntityClient.calledFrom(6).contains("InventoryScreen") || KAIMyEntityClient.calledFrom(6).contains("class_490")){
+            nf.SetHeadAngle(model, headAngleX*((float)Math.PI / 180F), -headAngleY*((float)Math.PI / 180F), 0.0f, false);
+        }else{
+            nf.SetHeadAngle(model, headAngleX*((float)Math.PI / 180F), headAngleY*((float)Math.PI / 180F), 0.0f, true);
+        }
         Update();
         RenderModel(entityIn, entityYaw, entityPitch, entityTrans, mat);
     }
