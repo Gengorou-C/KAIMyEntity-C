@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.FloatBuffer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -154,9 +153,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            if(KAIMyEntityClient.calledFrom(6).contains("InventoryScreen") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
+            if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.pushPose();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);

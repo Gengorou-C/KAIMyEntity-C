@@ -10,7 +10,6 @@ architectury {
 loom {
     forge {
         mixinConfig "kaimyentity-common.mixins.json"
-        mixinConfig "kaimyentity.mixins.json"
     }
 }
 
