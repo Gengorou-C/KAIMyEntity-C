@@ -43,8 +43,10 @@ public class KAIMyEntityRegisterClient {
     public static void Register() {
         Minecraft MCinstance = Minecraft.getInstance();
         RegisterRenderers RR = new RegisterRenderers();
-        for (KeyMapping i : new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties, keyChangeProgram})
+        for (KeyMapping i : new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties})
             ClientRegistry.registerKeyBinding(i);
+        if(KAIMyEntityConfig.isMMDShaderEnabled.get())
+            ClientRegistry.registerKeyBinding(keyChangeProgram);
 
         File[] modelDirs = new File(MCinstance.gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
