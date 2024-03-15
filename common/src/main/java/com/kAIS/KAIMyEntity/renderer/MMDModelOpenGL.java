@@ -24,6 +24,7 @@ public class MMDModelOpenGL implements IMMDModel {
     static NativeFunc nf;
     static boolean isShaderInited = false;
     static int MMDShaderProgram;
+    public static boolean isMMDShaderEnabled = false;
     int shaderProgram;
 
     int positionLocation;

@@ -1,12 +1,10 @@
 package com.kAIS.KAIMyEntity;
 
-import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
-import com.mojang.math.Vector3f;
-import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -16,12 +14,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.mojang.math.Vector3f;
 
-public class KAIMyEntityClient implements ClientModInitializer {
+public class KAIMyEntityClient {
     public static final Logger logger = LogManager.getLogger();
     public static int usingMMDShader = 0;
     public static boolean reloadProperties = false;
@@ -29,16 +29,13 @@ public class KAIMyEntityClient implements ClientModInitializer {
     static final int BUFFER = 512;
     static final long TOOBIG = 0x6400000; // Max size of unzipped data, 100MB
     static final int TOOMANY = 1024;      // Max number of files
+    //public static String[] debugStr = new String[10];
 
-    @Override
-    public void onInitializeClient() {
-        logger.info("KAIMyEntity InitClient begin...");
+    public static void initClient() {
         checkKAIMyEntityFolder();
         MMDModelManager.Init();
         MMDTextureManager.Init();
         MMDAnimManager.Init();
-        KAIMyEntityRegisterClient.Register();
-        logger.info("KAIMyEntity InitClient successful.");
     }
 
     private static String validateFilename(String filename, String intendedDir) throws java.io.IOException {
@@ -100,7 +97,7 @@ public class KAIMyEntityClient implements ClientModInitializer {
         }
     }
 
-    private void checkKAIMyEntityFolder(){
+    private static void checkKAIMyEntityFolder(){
         File KAIMyEntityFolder = new File(gameDirectory + "/KAIMyEntity");
         if (!KAIMyEntityFolder.exists()){
             logger.info("KAIMyEntity folder not found, try download from github!");
@@ -136,5 +133,15 @@ public class KAIMyEntityClient implements ClientModInitializer {
         }
         vector3f.set( Float.valueOf(splittedStr[0]), Float.valueOf(splittedStr[1]), Float.valueOf(splittedStr[2]) );
         return vector3f;
+    }
+    
+    public static void drawText(String arg, int x, int y){
+        //MinecraftClient MCinstance = MinecraftClient.getInstance();
+        PoseStack mat;
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        mat = RenderSystem.getModelViewStack();
+        mat.pushPose();
+        //instance.textRenderer.draw(mat, arg, x, y, -1);
+        mat.popPose();
     }
 }

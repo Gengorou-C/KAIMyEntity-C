@@ -1,6 +1,6 @@
 package com.kAIS.KAIMyEntity.forge.register;
 
-import com.kAIS.KAIMyEntity.network.KAIMyEntityNetworkPack;
+import com.kAIS.KAIMyEntity.forge.network.KAIMyEntityNetworkPack;
 
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;

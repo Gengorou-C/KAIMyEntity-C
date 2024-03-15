@@ -3,7 +3,7 @@ package com.kAIS.KAIMyEntity.forge.network;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterCommon;
+import com.kAIS.KAIMyEntity.forge.register.KAIMyEntityRegisterCommon;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 
