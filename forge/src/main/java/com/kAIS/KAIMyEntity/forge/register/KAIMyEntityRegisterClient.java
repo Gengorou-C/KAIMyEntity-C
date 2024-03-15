@@ -1,13 +1,18 @@
 package com.kAIS.KAIMyEntity.forge.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.forge.config.KAIMyEntityConfig;
 import com.kAIS.KAIMyEntity.forge.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-
 import com.mojang.blaze3d.platform.InputConstants;
-
+import java.io.File;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,17 +24,9 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.fml.common.Mod;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.world.entity.EntityType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
-
-import java.io.File;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class KAIMyEntityRegisterClient {
@@ -117,7 +114,7 @@ public class KAIMyEntityRegisterClient {
         if (keyReloadProperties.isDown()) {
             KAIMyEntityClient.reloadProperties = true;
         }
-        if (keyChangeProgram.isDown()) {
+        if (keyChangeProgram.isDown() && KAIMyEntityConfig.isMMDShaderEnabled.get()) {
             KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
             
             if(KAIMyEntityClient.usingMMDShader == 0)
@@ -141,7 +138,6 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntity.debugStr[j] = "EMPTY";
             }
 		}
-       
 	}
     */
 }

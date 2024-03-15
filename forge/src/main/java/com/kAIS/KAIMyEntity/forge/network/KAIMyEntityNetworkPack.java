@@ -6,15 +6,13 @@ import java.util.function.Supplier;
 import com.kAIS.KAIMyEntity.forge.register.KAIMyEntityRegisterCommon;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
 
 public class KAIMyEntityNetworkPack {
     public int opCode;
@@ -56,13 +54,13 @@ public class KAIMyEntityNetworkPack {
     public void DoInClient() {
         Minecraft MCinstance = Minecraft.getInstance();
         //Ignore message when player is self.
-        assert Minecraft.getInstance().player != null;
+        assert MCinstance.player != null;
         if (playerUUID.equals(MCinstance.player.getUUID()))
             return;
         switch (opCode) {
             case 1: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert Minecraft.getInstance().level != null;
+                assert MCinstance.level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.CustomAnim(target, Integer.toString(arg0));
@@ -70,7 +68,7 @@ public class KAIMyEntityNetworkPack {
             }
             case 2: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert Minecraft.getInstance().level != null;
+                assert MCinstance.level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.ResetPhysics(target);

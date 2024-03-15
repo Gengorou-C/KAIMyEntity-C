@@ -1,12 +1,11 @@
 package com.kAIS.KAIMyEntity.fabric.config;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Properties;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class KAIMyEntityConfig {
     public static boolean openGLEnableLighting = true;

@@ -1,11 +1,9 @@
 package com.kAIS.KAIMyEntity.fabric.network;
 
-import java.util.UUID;
-
 import com.kAIS.KAIMyEntity.fabric.register.KAIMyEntityRegisterCommon;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-
+import java.util.UUID;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
@@ -28,13 +26,13 @@ public class KAIMyEntityNetworkPack {
     public static void DoInClient(int opCode, UUID playerUUID, int arg0) {
         Minecraft MCinstance = Minecraft.getInstance();
         //Ignore message when player is self.
-        assert Minecraft.getInstance().player != null;
+        assert MCinstance.player != null;
         if (playerUUID.equals(MCinstance.player.getUUID()))
             return;
         switch (opCode) {
             case 1: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert Minecraft.getInstance().level != null;
+                assert MCinstance.level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.CustomAnim(target, Integer.toString(arg0));
@@ -42,7 +40,7 @@ public class KAIMyEntityNetworkPack {
             }
             case 2: {
                 MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
-                assert Minecraft.getInstance().level != null;
+                assert MCinstance.level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
                     KAIMyEntityRendererPlayerHelper.ResetPhysics(target);

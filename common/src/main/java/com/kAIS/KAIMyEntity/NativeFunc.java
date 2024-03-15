@@ -1,15 +1,19 @@
 package com.kAIS.KAIMyEntity;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import net.minecraft.client.Minecraft;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NativeFunc {
+    public static final Logger logger = LogManager.getLogger();
     private static final String RuntimePath = new File(System.getProperty("java.home")).getParent();
     private static final String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
     private static final boolean isAndroid = new File("/system/build.prop").exists();
@@ -17,17 +21,27 @@ public class NativeFunc {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
     private static final HashMap<runtimeUrlRes, String> urlMap = new HashMap<runtimeUrlRes, String>() {
         {
-            put(runtimeUrlRes.windows, "https://github.com/Gengorou-C/KAIMyEntitySaba/releases/download/20221215/KAIMyEntitySaba.dll");
+            put(runtimeUrlRes.windows, "https://github.com/Gengorou-C/KAIMyEntitySaba/releases/download/20240314/KAIMyEntitySaba.dll");
             put(runtimeUrlRes.android_arch64, "https://github.com.cnpmjs.org/asuka-mio/KAIMyEntitySaba/releases/download/crossplatform/KAIMyEntitySaba.so");
             put(runtimeUrlRes.android_arch64_libc, "https://github.com.cnpmjs.org/asuka-mio/KAIMyEntitySaba/releases/download/crossplatform/libc++_shared.so");
         }
     };
     static NativeFunc inst;
+    static final String libraryVersion = "C-20240314";
 
     public static NativeFunc GetInst() {
         if (inst == null) {
             inst = new NativeFunc();
             inst.Init();
+            if(!inst.GetVersion().equals(libraryVersion)){
+                logger.warn("Incompatible Version dll. / loaded ver -> " + inst.GetVersion() + " / required ver -> "+ libraryVersion);
+                logger.warn("Please restart or download dll.");
+                try{
+                    Files.move(Paths.get(gameDirectory, "KAIMyEntitySaba.dll"),Paths.get(gameDirectory, "KAIMyEntitySaba.dll.old"));
+                }catch(Exception e){
+                    logger.info(e);
+                }
+            }
         }
         return inst;
     }
@@ -38,7 +52,7 @@ public class NativeFunc {
                 System.load(file.getAbsolutePath());
                 return; //File exist and loadable
             } catch (Error e) {
-                KAIMyEntityClient.logger.info("\"" + file.getAbsolutePath() + "\" broken! Trying recover it!");
+                logger.info("\"" + file.getAbsolutePath() + "\" broken! Trying recover it!");
             }
         }
         try {
@@ -48,9 +62,9 @@ public class NativeFunc {
             System.load(file.getAbsolutePath());
         } catch (IOException e) {
             file.delete();
-            KAIMyEntityClient.logger.info("Download \"" + url.getPath() + "\" failed!");
-            KAIMyEntityClient.logger.info("Cannot download runtime!");
-            KAIMyEntityClient.logger.info("Check you internet connection and restart game!");
+            logger.info("Download \"" + url.getPath() + "\" failed!");
+            logger.info("Cannot download runtime!");
+            logger.info("Check you internet connection and restart game!");
             e.printStackTrace();
             throw e;
         }
@@ -61,7 +75,7 @@ public class NativeFunc {
             DownloadSingleFile(new URL(urlMap.get(runtimeUrlRes.windows)), new File(gameDirectory, "KAIMyEntitySaba.dll"));
         }
         if (isLinux && !isAndroid) {
-            KAIMyEntityClient.logger.info("Not support!");
+            logger.info("Not support!");
             throw new Error();
         }
         if (isLinux && isAndroid) {
@@ -74,7 +88,7 @@ public class NativeFunc {
         try {
             System.load(file.getAbsolutePath());
         } catch (Error e) {
-            KAIMyEntityClient.logger.info("Runtime \"" + file.getAbsolutePath() + "\" not found, try download from github!");
+            logger.info("Runtime \"" + file.getAbsolutePath() + "\" not found, try download from github!");
             throw e;
         }
     }
@@ -82,15 +96,15 @@ public class NativeFunc {
     private void Init() {
         try {
             if (isWindows) {
-                KAIMyEntityClient.logger.info("Win32 Env Detected!");
+                logger.info("Win32 Env Detected!");
                 LoadLibrary(new File(gameDirectory, "KAIMyEntitySaba.dll"));//WIN32
             }
             if (isLinux && !isAndroid) {
-                KAIMyEntityClient.logger.info("Linux Env Detected!");
+                logger.info("Linux Env Detected!");
                 LoadLibrary(new File(gameDirectory, "KAIMyEntitySaba.so"));//Linux
             }
             if (isLinux && isAndroid) {
-                KAIMyEntityClient.logger.info("Android Env Detected!");
+                logger.info("Android Env Detected!");
                 LoadLibrary(new File(RuntimePath, "libc++_shared.so"));
                 LoadLibrary(new File(RuntimePath, "KAIMyEntitySaba.so"));//Android
             }
@@ -200,6 +214,8 @@ public class NativeFunc {
     public native long LoadAnimation(long model, String filename);
 
     public native void DeleteAnimation(long anim);
+
+    public native void SetHeadAngle(long model, float x, float y, float z, boolean flag);
 
     enum runtimeUrlRes {
         windows,android_arch64, android_arch64_libc

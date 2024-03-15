@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.FloatBuffer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -27,6 +28,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.GameType;
@@ -39,24 +41,23 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
     }
 
     @Inject(method = {"render"}, at = @At("HEAD"), cancellable = true)
-    public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource vertexConsumers, int packedLightIn, CallbackInfo ci) {
+    public void render(AbstractClientPlayer entityIn, float entityYaw, float tickDelta, PoseStack matrixStackIn, MultiBufferSource vertexConsumers, int packedLightIn, CallbackInfo ci) {
         Minecraft MCinstance = Minecraft.getInstance();
         IMMDModel model = null;
-        float bodyYaw = entityIn.yBodyRot;
+        float bodyYaw = Mth.rotLerp(tickDelta, entityIn.yBodyRotO, entityIn.yBodyRot);
         float bodyPitch = 0.0f;
         Vector3f entityTrans = new Vector3f(0.0f, 0.0f, 0.0f);
         MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + entityIn.getName().getString());
         if (m == null){
             m = MMDModelManager.GetModel("EntityPlayer");
-        }        
+        }
         if (m == null){
-            super.render(entityIn, entityYaw, partialTicks, matrixStackIn, vertexConsumers, packedLightIn);
+            super.render(entityIn, entityYaw, tickDelta, matrixStackIn, vertexConsumers, packedLightIn);
             return;
         } 
         if (m != null){
             model = m.model;
         }
-
         MMDModelManager.ModelWithEntityData mwed = (MMDModelManager.ModelWithEntityData) m;
         mwed.loadModelProperties(KAIMyEntityClient.reloadProperties);
         float sleepingPitch = mwed.properties.getProperty("sleepingPitch") == null ? 0.0f : Float.valueOf(mwed.properties.getProperty("sleepingPitch"));
@@ -86,10 +87,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 } else if (entityIn.isPassenger()) {
                     if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.xo != 0.0f || entityIn.getZ() - entityIn.zo != 0.0f)){
                         AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.OnHorse, 0);
-                        bodyYaw = entityIn.getVehicle().getYRot();
                     }else if(entityIn.getVehicle().getType() == EntityType.HORSE){
                         AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Ride, 0);
-                        bodyYaw = entityIn.getVehicle().getYRot();
                     }else{
                         AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Ride, 0);
                     }
@@ -121,7 +120,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Idle, 0);
                 }
 
-                //Layer 1                
+                //Layer 1
                 if(!entityIn.isUsingItem() && !entityIn.swinging || entityIn.isSleeping()){
                     if (mwed.entityData.stateLayers[1] != MMDModelManager.EntityData.EntityState.Idle) {
                         mwed.entityData.stateLayers[1] = MMDModelManager.EntityData.EntityState.Idle;
@@ -143,6 +142,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     }
                 }
 
+
                 //Layer 2
                 if (entityIn.isShiftKeyDown() && !entityIn.isVisuallyCrawling()) {
                     AnimStateChangeOnce(mwed, MMDModelManager.EntityData.EntityState.Sneak, 2);
@@ -154,10 +154,9 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            if(KAIMyEntityClient.calledFrom(6).contains("Inventory") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
+            if(KAIMyEntityClient.calledFrom(6).contains("InventoryScreen") || KAIMyEntityClient.calledFrom(6).contains("class_490")){ // net.minecraft.class_490 == net.minecraft.client.gui.screen.ingame.InventoryScreen
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.pushPose();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
@@ -170,7 +169,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 quaternion.mul(quaternion2);
                 PTS_modelViewStack.mulPose(quaternion);
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
-                model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f,0.0f,0.0f), PTS_modelViewStack, packedLightIn);
+                model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f,0.0f,0.0f), tickDelta, PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.popPose();
                 matrixStackIn.mulPose(quaternion2);
                 matrixStackIn.scale(size[1], size[1], size[1]);
@@ -178,7 +177,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             }else{
                 matrixStackIn.scale(size[0], size[0], size[0]);
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
-                model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, matrixStackIn, packedLightIn);
+                model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, tickDelta, matrixStackIn, packedLightIn);
             }
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;
@@ -204,6 +203,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             Minecraft.getInstance().getItemRenderer().renderStatic(entityIn, entityIn.getOffhandItem(), ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
             matrixStackIn.popPose();
         }
+        
+        //for(int i=0; i<10; i++){
+        //    KAIMyEntityClient.drawText(i+":"+KAIMyEntityClient.debugStr[i], 0, i*15);
+        //}
         ci.cancel();//Added By FMyuchuan. | 隐藏模型脚下的史蒂夫
     }
 
@@ -277,7 +280,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         String itemId;
         String strHand;
         String handState;
-
+        
         itemId = getItemId_in_ActiveHand(entityIn,iHand);
 
         if (iHand == InteractionHand.MAIN_HAND){

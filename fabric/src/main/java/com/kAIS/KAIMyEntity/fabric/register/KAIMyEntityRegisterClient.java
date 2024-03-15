@@ -1,11 +1,16 @@
 package com.kAIS.KAIMyEntity.fabric.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.fabric.config.KAIMyEntityConfig;
 import com.kAIS.KAIMyEntity.fabric.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import java.io.File;
+import java.util.UUID;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -17,13 +22,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
-import org.lwjgl.glfw.GLFW;
 
-import java.io.File;
-import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class KAIMyEntityRegisterClient {
+    static final Logger logger = LogManager.getLogger();
     static KeyMapping keyResetPhysics = new KeyMapping("key.resetPhysics", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, "key.title");
     static KeyMapping keyReloadModels = new KeyMapping("key.reloadModels", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.title");
     static KeyMapping keyReloadProperties = new KeyMapping("key.reloadProperties", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, "key.title");
@@ -32,7 +38,7 @@ public class KAIMyEntityRegisterClient {
     static KeyMapping keyCustomAnim2 = new KeyMapping("key.customAnim2", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
     static KeyMapping keyCustomAnim3 = new KeyMapping("key.customAnim3", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
     static KeyMapping keyCustomAnim4 = new KeyMapping("key.customAnim4", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.title");
-    static KeyMapping[] keyBindings = new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties, keyChangeProgram};
+    static KeyMapping[] keyBindings = new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties};
     static KeyMapping[] customKeyBindings = new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4};
 
     public static void Register() {
@@ -62,15 +68,19 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntityClient.reloadProperties = true;
             }
         });
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyChangeProgram.consumeClick()) {
-                KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
-                if(KAIMyEntityClient.usingMMDShader == 0)
-                    MCinstance.gui.getChat().addMessage(Component.nullToEmpty("Default shader"));
-                if(KAIMyEntityClient.usingMMDShader == 1)
-                    MCinstance.gui.getChat().addMessage(Component.nullToEmpty("MMDShader"));
-            }
-        });
+
+        if(KAIMyEntityConfig.isMMDShaderEnabled){
+            KeyBindingHelper.registerKeyBinding(keyChangeProgram);
+            ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                while (keyChangeProgram.consumeClick()) {
+                    KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
+                    if(KAIMyEntityClient.usingMMDShader == 0)
+                        MCinstance.gui.getChat().addMessage(Component.nullToEmpty("Default shader"));
+                    if(KAIMyEntityClient.usingMMDShader == 1)
+                        MCinstance.gui.getChat().addMessage(Component.nullToEmpty("MMDShader"));
+                }
+            });
+        }
 
         File[] modelDirs = new File(MCinstance.gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
@@ -80,11 +90,11 @@ public class KAIMyEntityRegisterClient {
                     if (EntityType.byString(mcEntityName).isPresent())
                         EntityRendererRegistry.register(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
                     else
-                        KAIMyEntityClient.logger.warn(mcEntityName + " not present, ignore rendering it!");
+                        logger.warn(mcEntityName + " not present, ignore rendering it!");
                 }
             }
         }
-        
+
         ClientPlayNetworking.registerGlobalReceiver(KAIMyEntityRegisterCommon.KAIMYENTITY_S2C, (client, handler, buf, responseSender) -> {
             int opCode = buf.readInt();
             UUID playerUUID = buf.readUUID();
@@ -94,20 +104,24 @@ public class KAIMyEntityRegisterClient {
             });
         });
         
-        KAIMyEntityClient.logger.info("KAIMyEntityRegisterClient.Register() finished");
+        logger.info("KAIMyEntityRegisterClient.Register() finished");
     }
 
     public static void onKeyResetPhysicsDown() {
         Minecraft MCinstance = Minecraft.getInstance();
         LocalPlayer localPlayer = MCinstance.player;
         KAIMyEntityNetworkPack.sendToServer(2, localPlayer.getUUID(), 0);
-        KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
+        RenderSystem.recordRenderCall(()->{
+            KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
+        });
     }
 
     public static void onCustomKeyDown(Integer numOfKey) {
         Minecraft MCinstance = Minecraft.getInstance();
         LocalPlayer localPlayer = MCinstance.player;
         KAIMyEntityNetworkPack.sendToServer(1, localPlayer.getUUID(), numOfKey);
-        KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, numOfKey.toString());
+        RenderSystem.recordRenderCall(()->{
+            KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, numOfKey.toString());
+        });
     }
 }
