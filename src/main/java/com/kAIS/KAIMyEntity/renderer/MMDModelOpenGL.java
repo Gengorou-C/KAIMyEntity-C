@@ -3,23 +3,22 @@ package com.kAIS.KAIMyEntity.renderer;
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.Shader;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.world.LightType;
-
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import org.lwjgl.opengl.GL46C;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.LightLayer;
 
 public class MMDModelOpenGL implements IMMDModel {
     static NativeFunc nf;
@@ -66,7 +65,7 @@ public class MMDModelOpenGL implements IMMDModel {
     int indexType;
     Material[] mats;
     Material lightMapMaterial;
-    Vec3f light0Direction, light1Direction;
+    Vector3f light0Direction, light1Direction;
 
     MMDModelOpenGL() {
 
@@ -92,7 +91,7 @@ public class MMDModelOpenGL implements IMMDModel {
             KAIMyEntityClient.logger.info(String.format("Cannot open model: '%s'.", modelFilename));
             return null;
         }
-        BufferRenderer.unbindAll();
+        BufferUploader.reset();
         //Model exists,now we prepare data for OpenGL
         int vertexArrayObject = GL46C.glGenVertexArrays();
         int indexBufferObject = GL46C.glGenBuffers();
@@ -218,7 +217,7 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.DeleteModel(model.model);
     }
 
-    public void Render(Entity entityIn, float entityYaw, float entityPitch, Vec3f entityTrans, MatrixStack mat, int packedLight) {
+    public void Render(Entity entityIn, float entityYaw, float entityPitch, Vector3f entityTrans, PoseStack mat, int packedLight) {
         Update();
         RenderModel(entityIn, entityYaw, entityPitch, entityTrans, mat);
     }
@@ -243,24 +242,24 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.UpdateModel(model);
     }
 
-    void RenderModel(Entity entityIn, float entityYaw, float entityPitch, Vec3f entityTrans, MatrixStack deliverStack) {
-        MinecraftClient MCinstance = MinecraftClient.getInstance();
-        light0Direction = new Vec3f(1.0f, 0.75f, 0.0f);
-        light1Direction = new Vec3f(-1.0f, 0.75f, 0.0f);
+    void RenderModel(Entity entityIn, float entityYaw, float entityPitch, Vector3f entityTrans, PoseStack deliverStack) {
+        Minecraft MCinstance = Minecraft.getInstance();
+        light0Direction = new Vector3f(1.0f, 0.75f, 0.0f);
+        light1Direction = new Vector3f(-1.0f, 0.75f, 0.0f);
         light0Direction.normalize();
         light1Direction.normalize();
-        light0Direction.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion(entityYaw));
-        light1Direction.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion(entityYaw));
+        light0Direction.transform(Vector3f.YP.rotationDegrees(entityYaw));
+        light1Direction.transform(Vector3f.YP.rotationDegrees(entityYaw));
 
-        deliverStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-entityYaw));
-        deliverStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(entityPitch));
-        deliverStack.translate(entityTrans.getX(), entityTrans.getY(), entityTrans.getZ());
+        deliverStack.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
+        deliverStack.mulPose(Vector3f.XP.rotationDegrees(entityPitch));
+        deliverStack.translate(entityTrans.x(), entityTrans.y(), entityTrans.z());
         deliverStack.scale(0.09f, 0.09f, 0.09f);
         
         if(KAIMyEntityClient.usingMMDShader == 0){
-            shaderProgram = RenderSystem.getShader().getProgramRef();
+            shaderProgram = RenderSystem.getShader().getId();
             setUniforms(RenderSystem.getShader(), deliverStack);
-            RenderSystem.getShader().bind();
+            RenderSystem.getShader().apply();
         }
         if(KAIMyEntityClient.usingMMDShader == 1){
             shaderProgram = MMDShaderProgram;
@@ -269,12 +268,12 @@ public class MMDModelOpenGL implements IMMDModel {
         
         updateLocation(shaderProgram);
 
-        BufferRenderer.unbindAll();
+        BufferUploader.reset();
         GL46C.glBindVertexArray(vertexArrayObject);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
         RenderSystem.blendEquation(GL46C.GL_FUNC_ADD);
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         //Position
         int posAndNorSize = vertexCount * 12; //float * 3
@@ -309,9 +308,9 @@ public class MMDModelOpenGL implements IMMDModel {
         }
 
         //UV2
-        MCinstance.world.calculateAmbientDarkness();
-        int blockBrightness = 16 * entityIn.world.getLightLevel(LightType.BLOCK, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())));
-        int skyBrightness = Math.round((15.0f-MCinstance.world.getAmbientDarkness()) * (entityIn.world.getLightLevel(LightType.SKY, entityIn.getBlockPos().up((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
+        MCinstance.level.updateSkyBrightness();
+        int blockBrightness = 16 * entityIn.level.getBrightness(LightLayer.BLOCK, entityIn.blockPosition().above((int)(entityIn.getEyeY()-entityIn.getBlockY())));
+        int skyBrightness = Math.round((15.0f-MCinstance.level.getSkyDarken()) * (entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition().above((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
         uv2Buffer.clear();
         for(int i = 0; i < vertexCount; i++){
             uv2Buffer.putInt(blockBrightness);
@@ -346,8 +345,8 @@ public class MMDModelOpenGL implements IMMDModel {
 
         FloatBuffer modelViewMatBuff = MemoryUtil.memAllocFloat(16);
         FloatBuffer projMatBuff = MemoryUtil.memAllocFloat(16);
-        deliverStack.peek().getPositionMatrix().writeColumnMajor(modelViewMatBuff);
-        RenderSystem.getProjectionMatrix().writeColumnMajor(projMatBuff);
+        deliverStack.last().pose().store(modelViewMatBuff);
+        RenderSystem.getProjectionMatrix().store(projMatBuff);
 
         //upload Uniforms(MMDShader)
         if(KAIMyEntityClient.usingMMDShader == 1){
@@ -356,17 +355,17 @@ public class MMDModelOpenGL implements IMMDModel {
 
             if(light0Location != -1){
                 FloatBuffer light0Buff = MemoryUtil.memAllocFloat(3);
-                light0Buff.put(light0Direction.getX());
-                light0Buff.put(light0Direction.getY());
-                light0Buff.put(light0Direction.getZ());
+                light0Buff.put(light0Direction.x());
+                light0Buff.put(light0Direction.y());
+                light0Buff.put(light0Direction.z());
                 light0Buff.position(0);
                 RenderSystem.glUniform3(light0Location, light0Buff);
             }
             if(light1Location != -1){
                 FloatBuffer light1Buff = MemoryUtil.memAllocFloat(3);
-                light1Buff.put(light1Direction.getX());
-                light1Buff.put(light1Direction.getY());
-                light1Buff.put(light1Direction.getZ());
+                light1Buff.put(light1Direction.x());
+                light1Buff.put(light1Direction.y());
+                light1Buff.put(light1Direction.z());
                 light1Buff.position(0);
                 RenderSystem.glUniform3(light1Location, light1Buff);
             }
@@ -482,7 +481,7 @@ public class MMDModelOpenGL implements IMMDModel {
                 RenderSystem.enableCull();
             }
             if (mats[materialID].tex == 0)
-                MCinstance.getEntityRenderDispatcher().textureManager.bindTexture(TextureManager.MISSING_IDENTIFIER);
+                MCinstance.getEntityRenderDispatcher().textureManager.bindForSetup(TextureManager.INTENTIONAL_MISSING_TEXTURE);
             else
                 GL46C.glBindTexture(GL46C.GL_TEXTURE_2D, mats[materialID].tex);
             long startPos = (long) nf.GetSubMeshBeginIndex(model, i) * indexElementSize;
@@ -497,8 +496,8 @@ public class MMDModelOpenGL implements IMMDModel {
         if(KAIMyLocationF != -1)
             GL46C.glUniform1i(KAIMyLocationF, 0);
 
-        RenderSystem.getShader().unbind();
-        BufferRenderer.unbindAll();
+        RenderSystem.getShader().clear();
+        BufferUploader.reset();
     }
 
     static class Material {
@@ -544,45 +543,45 @@ public class MMDModelOpenGL implements IMMDModel {
         I_colorLocation = GlStateManager._glGetAttribLocation(shaderProgram, "iris_Color");
     }
 
-    public void setUniforms(Shader shader, MatrixStack deliverStack){
-        if(shader.modelViewMat != null)
-            shader.modelViewMat.set(deliverStack.peek().getPositionMatrix());
+    public void setUniforms(ShaderInstance shader, PoseStack deliverStack){
+        if(shader.MODEL_VIEW_MATRIX != null)
+            shader.MODEL_VIEW_MATRIX.set(deliverStack.last().pose());
 
-        if(shader.projectionMat != null)
-            shader.projectionMat.set(RenderSystem.getProjectionMatrix());
+        if(shader.PROJECTION_MATRIX != null)
+            shader.PROJECTION_MATRIX.set(RenderSystem.getProjectionMatrix());
 
-        if(shader.colorModulator != null)
-            shader.colorModulator.set(RenderSystem.getShaderColor());
+        if(shader.COLOR_MODULATOR != null)
+            shader.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
 
-        if(shader.light0Direction != null)
-            shader.light0Direction.set(light0Direction);
+        if(shader.LIGHT0_DIRECTION != null)
+            shader.LIGHT0_DIRECTION.set(light0Direction);
 
-        if(shader.light1Direction != null)
-            shader.light1Direction.set(light1Direction);
+        if(shader.LIGHT1_DIRECTION != null)
+            shader.LIGHT1_DIRECTION.set(light1Direction);
 
-        if(shader.fogStart != null)
-            shader.fogStart.set(RenderSystem.getShaderFogStart());
+        if(shader.FOG_START != null)
+            shader.FOG_START.set(RenderSystem.getShaderFogStart());
 
-        if(shader.fogEnd != null)
-            shader.fogEnd.set(RenderSystem.getShaderFogEnd());
+        if(shader.FOG_END != null)
+            shader.FOG_END.set(RenderSystem.getShaderFogEnd());
 
-        if(shader.fogColor != null)
-            shader.fogColor.set(RenderSystem.getShaderFogColor());
+        if(shader.FOG_COLOR != null)
+            shader.FOG_COLOR.set(RenderSystem.getShaderFogColor());
 
-        if (shader.textureMat != null) 
-            shader.textureMat.set(RenderSystem.getTextureMatrix());
+        if (shader.TEXTURE_MATRIX != null) 
+            shader.TEXTURE_MATRIX.set(RenderSystem.getTextureMatrix());
 
-        if (shader.gameTime != null) 
-            shader.gameTime.set(RenderSystem.getShaderGameTime());
+        if (shader.GAME_TIME != null) 
+            shader.GAME_TIME.set(RenderSystem.getShaderGameTime());
 
-        if (shader.screenSize != null) {
-            Window window = MinecraftClient.getInstance().getWindow();
-            shader.screenSize.set((float)window.getWidth(), (float)window.getHeight());
+        if (shader.SCREEN_SIZE != null) {
+            Window window = Minecraft.getInstance().getWindow();
+            shader.SCREEN_SIZE.set((float)window.getScreenWidth(), (float)window.getScreenHeight());
         }
-        if (shader.lineWidth != null) 
-            shader.lineWidth.set(RenderSystem.getShaderLineWidth());
+        if (shader.LINE_WIDTH != null) 
+            shader.LINE_WIDTH.set(RenderSystem.getShaderLineWidth());
 
-        shader.addSampler("Sampler1", lightMapMaterial.tex);
-        shader.addSampler("Sampler2", lightMapMaterial.tex);
+        shader.setSampler("Sampler1", lightMapMaterial.tex);
+        shader.setSampler("Sampler2", lightMapMaterial.tex);
     }
 }

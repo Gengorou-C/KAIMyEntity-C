@@ -1,13 +1,13 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class KAIMyEntityRendererPlayerHelper {
 
     KAIMyEntityRendererPlayerHelper() {
     }
 
-    public static void ResetPhysics(PlayerEntity player) {
+    public static void ResetPhysics(Player player) {
         MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + player.getName().getString());
         if (m == null)
             m = MMDModelManager.GetModel("EntityPlayer");
@@ -21,7 +21,7 @@ public class KAIMyEntityRendererPlayerHelper {
         }
     }
 
-    public static void CustomAnim(PlayerEntity player, String id) {
+    public static void CustomAnim(Player player, String id) {
         MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + player.getName().getString());
         if (m == null)
             m = MMDModelManager.GetModel("EntityPlayer");

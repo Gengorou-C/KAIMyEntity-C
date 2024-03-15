@@ -4,10 +4,9 @@ import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
+import com.mojang.math.Vector3f;
 import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.Vec3f;
-
+import net.minecraft.client.Minecraft;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -26,7 +25,7 @@ public class KAIMyEntityClient implements ClientModInitializer {
     public static final Logger logger = LogManager.getLogger();
     public static int usingMMDShader = 0;
     public static boolean reloadProperties = false;
-    static String gameDirectory = MinecraftClient.getInstance().runDirectory.getAbsolutePath();
+    static String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
     static final int BUFFER = 512;
     static final long TOOBIG = 0x6400000; // Max size of unzipped data, 100MB
     static final int TOOMANY = 1024;      // Max number of files
@@ -129,11 +128,11 @@ public class KAIMyEntityClient implements ClientModInitializer {
         return steArray[i].getClassName();
     }
 
-    public static Vec3f str2Vec3f(String arg){
-        Vec3f vector3f = new Vec3f();
+    public static Vector3f str2Vec3f(String arg){
+        Vector3f vector3f = new Vector3f();
         String[] splittedStr = arg.split(",");
         if (splittedStr.length != 3){
-            return new Vec3f(0.0f, 0.0f, 0.0f);
+            return new Vector3f(0.0f, 0.0f, 0.0f);
         }
         vector3f.set( Float.valueOf(splittedStr[0]), Float.valueOf(splittedStr[1]), Float.valueOf(splittedStr[2]) );
         return vector3f;

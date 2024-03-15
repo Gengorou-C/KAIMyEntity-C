@@ -2,18 +2,17 @@ package com.kAIS.KAIMyEntity.renderer;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
-import net.minecraft.client.MinecraftClient;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
 
 public class MMDAnimManager {
     static NativeFunc nf;
     static Map<String, Long> animStatic;
     static Map<IMMDModel, Map<String, Long>> animModel;
-    static String defaultAnimDir = new File(MinecraftClient.getInstance().runDirectory, "KAIMyEntity/DefaultAnim").getAbsolutePath();
+    static String defaultAnimDir = new File(Minecraft.getInstance().gameDirectory, "KAIMyEntity/DefaultAnim").getAbsolutePath();
 
     public static void Init() {
         nf = NativeFunc.GetInst();

@@ -1,6 +1,5 @@
 package com.kAIS.KAIMyEntity;
 
-import net.minecraft.client.MinecraftClient;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -8,10 +7,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import net.minecraft.client.Minecraft;
 
 public class NativeFunc {
     private static final String RuntimePath = new File(System.getProperty("java.home")).getParent();
-    private static final String gameDirectory = MinecraftClient.getInstance().runDirectory.getAbsolutePath();
+    private static final String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
     private static final boolean isAndroid = new File("/system/build.prop").exists();
     private static final boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");

@@ -2,8 +2,6 @@ package com.kAIS.KAIMyEntity.renderer;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
-import net.minecraft.client.MinecraftClient;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,10 +10,11 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import net.minecraft.client.Minecraft;
 
 public class MMDModelManager {
     static Map<String, Model> models;
-    static String gameDirectory = MinecraftClient.getInstance().runDirectory.getAbsolutePath();
+    static String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
 
     public static void Init() {
         models = new HashMap<>();
