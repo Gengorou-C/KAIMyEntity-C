@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.register;
+package com.kAIS.KAIMyEntity.fabric.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.network.KAIMyEntityNetworkPack;

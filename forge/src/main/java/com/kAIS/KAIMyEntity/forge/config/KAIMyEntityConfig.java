@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.config;
+package com.kAIS.KAIMyEntity.forge.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 

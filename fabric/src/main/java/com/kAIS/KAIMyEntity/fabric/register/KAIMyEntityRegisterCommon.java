@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.register;
+package com.kAIS.KAIMyEntity.fabric.register;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;

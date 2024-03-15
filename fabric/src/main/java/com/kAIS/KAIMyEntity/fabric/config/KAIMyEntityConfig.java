@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.config;
+package com.kAIS.KAIMyEntity.fabric.config;
 
 import net.fabricmc.loader.api.FabricLoader;
 

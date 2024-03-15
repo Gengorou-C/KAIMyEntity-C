@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.register;
+package com.kAIS.KAIMyEntity.forge.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.KAIMyEntityClient;

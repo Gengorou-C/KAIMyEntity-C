@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.network;
+package com.kAIS.KAIMyEntity.forge.network;
 
 import java.util.UUID;
 import java.util.function.Supplier;

@@ -1,4 +1,4 @@
-package com.kAIS.KAIMyEntity.network;
+package com.kAIS.KAIMyEntity.fabric.network;
 
 import java.util.UUID;
 
