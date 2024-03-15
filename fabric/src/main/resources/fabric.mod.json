@@ -20,20 +20,20 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.kAIS.KAIMyEntity.KAIMyEntity"
+      "com.kAIS.KAIMyEntity.fabric.KAIMyEntityFabric"
     ],
     "client": [
-      "com.kAIS.KAIMyEntity.KAIMyEntityClient"
+      "com.kAIS.KAIMyEntity.fabric.KAIMyEntityFabricClient"
     ]
   },
   "mixins": [
-    "kaimyentity.mixins.json"
+    "kaimyentity-common.mixins.json"
   ],
 
   "depends": {
-    "fabricloader": ">=0.13.0",
+    "fabricloader": ">=${fabric_loader_version}",
     "fabric": "*",
-    "minecraft": "~1.18",
+    "minecraft": ">=${minecraft_version}",
     "java": ">=17"
   },
   "suggests": {

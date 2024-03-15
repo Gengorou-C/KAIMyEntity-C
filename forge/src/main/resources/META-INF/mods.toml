@@ -17,9 +17,9 @@ license="MIT"
 # The modid of the mod
 modId="kaimyentity" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-# ${file.jarVersion} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
+# ${version} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
 # see the associated build.gradle script for how to populate this completely automatically during a build
-version="${file.jarVersion}" #mandatory
+version="${version}" #mandatory
 # A display name for the mod
 displayName="KAIMyEntity-C" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
@@ -27,11 +27,11 @@ displayName="KAIMyEntity-C" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="icon.png" #optional
+logoFile="assets/kaimyentity/icon.png" #optional
 # A text field displayed in the mod UI
 credits="KAIMyEntity" #optional
 # A text field displayed in the mod UI
-authors="kjkjkAIStudio, asuka-mio, Gengorou-C" #optional
+authors="kjkjkAIStudio(Original), asuka-mio(fabric ver.), Gengorou-C" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 KAIMyEntity
@@ -44,7 +44,7 @@ Replace Minecraft entity with MMD model.
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[38,)" #mandatory
+    versionRange="${forge_version_range}" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
